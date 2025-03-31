@@ -1,0 +1,52 @@
+{
+	"name": "SuperPay",
+	"description": "SuperPay is a payment extension for Chrome",
+	"version": "1.0",
+	"manifest_version": 3,
+	"action": {
+		"default_icon": {
+			"16": "images/tip-icon.png",
+			"32": "images/tip-icon.png",
+			"48": "images/tip-icon.png",
+			"128": "images/tip-icon.png"
+		},
+		"default_popup": "ui/auth.html"
+	},
+	"icons": {
+		"16": "images/tip-icon.png",
+		"32": "images/tip-icon.png",
+		"48": "images/tip-icon.png",
+		"128": "images/tip-icon.png"
+	},
+	"content_scripts": [
+		{
+			"js": ["scripts/content.js"],
+			"matches": [
+				"https://developer.chrome.com/docs/extensions/*",
+				"https://developer.chrome.com/docs/webstore/*"
+			]
+		},
+		{
+			"js": ["scripts/youtube.js", "scripts/payment-api.js"],
+			"matches": ["*://*.youtube.com/*"]
+		}
+	],
+	"background": {
+		"service_worker": "scripts/background.js",
+		"type": "module"
+	},
+	"permissions": ["activeTab", "scripting", "storage", "alarms"],
+	"host_permissions": ["http://localhost:8000/*"],
+	"commands": {
+		"_execute_action": {
+			"suggested_key": {
+				"default": "Ctrl+B",
+				"mac": "Command+B"
+			}
+		}
+	},
+	"minimum_chrome_version": "102",
+	"omnibox": {
+		"keyword": "superpay"
+	}
+}
