@@ -1,0 +1,46 @@
+{
+	"manifest_version": 3,
+	"name": "D-page",
+	"description": "D-page is a payment extension that allows you to pay for your purchases with just one click.",
+	"version": "1.0.0",
+
+	"icons": {
+		"16": "images/d-page.png",
+		"32": "images/d-page.png",
+		"48": "images/d-page.png",
+		"128": "images/d-page.png"
+	},
+
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"16": "images/d-page.png",
+			"32": "images/d-page.png",
+			"48": "images/d-page.png",
+			"128": "images/d-page.png"
+		}
+	},
+
+	"permissions": ["storage", "tabs", "activeTab", "scripting"],
+
+	"host_permissions": ["https://www.youtube.com/*", "https://github.com/*"],
+
+	"content_scripts": [
+		{
+			"matches": ["https://www.youtube.com/*"],
+			"js": ["youtube.js"],
+			"run_at": "document_idle"
+		},
+		{
+			"matches": ["https://github.com/*"],
+			"js": ["github.js"],
+			"run_at": "document_idle"
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": ["phantomBridge.js", "content.js"],
+			"matches": ["<all_urls>"]
+		}
+	]
+}
