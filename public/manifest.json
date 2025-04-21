@@ -27,24 +27,24 @@
 
 	"content_scripts": [
 		{
-			"matches": ["https://www.youtube.com/*"],
+			"matches": ["https://www.youtube.com/*", "https://youtube.com/*"],
 			"js": ["youtube.js"],
-			"run_at": "document_start"
+			"run_at": "document_idle"
 		},
 		{
 			"matches": ["https://github.com/*"],
 			"js": ["github.js"],
-			"run_at": "document_start"
+			"run_at": "document_idle"
 		},
 		{
 			"matches": ["https://x.com/*"],
 			"js": ["x.js"],
-			"run_at": "document_start"
+			"run_at": "document_idle"
 		}
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["phantomBridge.js", "youtube.js", "github.js", "x.js"],
+			"resources": ["phantomBridge.js"],
 			"matches": ["<all_urls>"]
 		}
 	]
