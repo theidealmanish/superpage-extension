@@ -31,7 +31,7 @@ export const createPopup = async (username: string, platform: string) => {
 		console.log('Recipient wallet:', recipient);
 	} catch (error) {
 		console.error('Error fetching recipient address:', error);
-		showToast('This user is not registered on D-Page.', 'error');
+		showToast('This user is not registered on SuperPage.', 'error');
 		return;
 	}
 
@@ -146,7 +146,7 @@ export const createPopup = async (username: string, platform: string) => {
     <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:16px !important">
         <div style="display:flex !important;align-items:center !important;gap:8px !important">
             <div style="background:#8b5cf6 !important;color:#fff !important;border-radius:50% !important;width:32px !important;height:32px !important;display:flex !important;align-items:center !important;justify-content:center !important">💸</div>
-            <h3 style="margin:0 !important;font-size:18px !important;font-weight:600 !important;color:#000 !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;">D-Page</h3>
+            <h3 style="margin:0 !important;font-size:18px !important;font-weight:600 !important;color:#000 !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;">SuperPage</h3>
         </div>
         <button id="superpage-close" style="background:none !important;border:none !important;color:#999 !important;font-size:18px !important;cursor:pointer !important;padding:0 !important;">✕</button>
     </div>
@@ -378,7 +378,7 @@ export const createPopup = async (username: string, platform: string) => {
 					recipientPubkey = new PublicKey(data.data.user.walletAddress);
 				} catch (error) {
 					console.error('Error fetching recipient address:', error);
-					showToast('This user is not registered on D-Page.', 'error');
+					showToast('This user is not registered on SuperPage.', 'error');
 					return;
 				}
 
@@ -387,9 +387,9 @@ export const createPopup = async (username: string, platform: string) => {
 					recipient: recipientPubkey,
 					amount: new BigNumber(amount),
 					reference,
-					label: 'D-Page Tip',
+					label: 'SuperPage Tip',
 					message: finalMessage,
-					memo: 'D-Page',
+					memo: 'SuperPage',
 				});
 
 				// Get the QR code container ready

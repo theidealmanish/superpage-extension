@@ -57,16 +57,9 @@ function App() {
 					className={`space-y-1 text-center ${isExtension ? 'p-3' : 'p-6'}`}
 				>
 					<CardTitle className='text-3xl font-bold text-primary'>
-						D-Page
+						SuperPage
 					</CardTitle>
 					<CardDescription>
-						<div>
-							<img
-								src='/images/d-page.png'
-								alt='D-Page Logo'
-								className={`w-16 h-16 mx-auto mb-2`}
-							/>
-						</div>
 						<div>Sign in to your account</div>
 					</CardDescription>
 				</CardHeader>

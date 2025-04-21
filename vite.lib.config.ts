@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
 		phantomBridge: 'src/injected/phantomBridge.ts',
 		youtube: 'src/content/youtube.ts',
 		github: 'src/content/github.ts',
+		x: 'src/content/x.ts',
 	};
 
 	// Fallback to YouTube if mode is unknown

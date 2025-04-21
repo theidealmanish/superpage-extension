@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
-	"name": "D-page",
-	"description": "D-page is a payment extension that allows you to pay for your purchases with just one click.",
+	"name": "SuperPage",
+	"description": "SuperPage is a payment extension that allows you to pay for your purchases with just one click.",
 	"version": "1.0.0",
 
 	"icons": {
@@ -29,17 +29,22 @@
 		{
 			"matches": ["https://www.youtube.com/*"],
 			"js": ["youtube.js"],
-			"run_at": "document_idle"
+			"run_at": "document_start"
 		},
 		{
 			"matches": ["https://github.com/*"],
 			"js": ["github.js"],
-			"run_at": "document_idle"
+			"run_at": "document_start"
+		},
+		{
+			"matches": ["https://x.com/*"],
+			"js": ["x.js"],
+			"run_at": "document_start"
 		}
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["phantomBridge.js", "content.js"],
+			"resources": ["phantomBridge.js", "youtube.js", "github.js", "x.js"],
 			"matches": ["<all_urls>"]
 		}
 	]
