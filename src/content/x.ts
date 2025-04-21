@@ -11,31 +11,23 @@ function injectCustomStyles(): void {
 	style.id = id;
 	style.textContent = `
         .superpage-btn {
-            background: linear-gradient(to right, #8b5cf6, #6366f1);
             color: white;
-            padding: 4px 12px;
             border-radius: 9999px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
             border: none;
             cursor: pointer;
-            margin: 0 8px;
             position: relative;
             overflow: hidden;
             height: 36px;
         }
         
         .superpage-btn:hover {
-            background: linear-gradient(to right, #7c3aed, #4f46e5);
             opacity: 0.9;
-        }
-        
-        .superpage-btn:active {
-            transform: translateY(1px);
         }
         
         .superpage-btn-icon {
@@ -48,9 +40,8 @@ function injectCustomStyles(): void {
         }
         
         .superpage-timeline-btn {
-            padding: 4px 8px;
+            padding: 4px;
             height: 32px;
-            margin: 0 4px;
         }
         
         .superpage-tooltip {
@@ -238,7 +229,6 @@ const processTweetTimeline = () => {
 
 		// Create our button div wrapper to match X.com's structure
 		const buttonWrapper = document.createElement('div');
-		buttonWrapper.className = 'css-175oi2r r-18u37iz r-1h0z5md';
 
 		// Create a new button for this tweet
 		const button = document.createElement('button');
@@ -249,7 +239,6 @@ const processTweetTimeline = () => {
 
 		button.innerHTML = `
             <span class="superpage-btn-icon">💸</span>
-            <span class="superpage-btn-text">Tip</span>
         `;
 
 		button.onclick = (e) => {
