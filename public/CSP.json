@@ -16,7 +16,7 @@
 			]
 		},
 		"condition": {
-			"regexFilter": "^*://*/*",
+			"regexFilter": "^(https://(x\\.com|github\\.com)/).*",
 			"resourceTypes": [
 				"main_frame",
 				"sub_frame",
