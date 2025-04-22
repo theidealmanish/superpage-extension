@@ -12,7 +12,8 @@
 		"build:youtube": "vite build --config vite.lib.config.ts --mode youtube",
 		"build:x": "vite build --config vite.lib.config.ts --mode x",
 		"build:github": "vite build --config vite.lib.config.ts --mode github",
-		"build:all": "npm run build:phantomBridge && npm run build:youtube && npm run build:github && npm run build:x"
+		"build:serviceWorker": "vite build --config vite.lib.config.ts --mode serviceWorker",
+		"build:all": "npm run build:phantomBridge && npm run build:youtube && npm run build:github && npm run build:x && npm run build:serviceWorker"
 	},
 	"dependencies": {
 		"@radix-ui/react-checkbox": "^1.1.4",

@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
 		youtube: 'src/content/youtube.ts',
 		github: 'src/content/github.ts',
 		x: 'src/content/x.ts',
+		serviceWorker: 'src/background/serviceWorker.ts',
 	};
 
 	// Fallback to YouTube if mode is unknown

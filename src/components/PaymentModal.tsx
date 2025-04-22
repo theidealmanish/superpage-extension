@@ -8,7 +8,7 @@ import {
 import { PublicKey, Connection, clusterApiUrl, Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Buffer } from 'buffer';
-import { getRecipientAddress } from '@/lib/getReciepientAddress';
+import getRecipientAddress from '@/lib/getReciepientAddress';
 // Make sure Buffer is available globally
 if (typeof window !== 'undefined') {
 	window.Buffer = Buffer;
@@ -23,6 +23,7 @@ export const createPopup = async (username: string, platform: string) => {
 
 	let recipient;
 	let user;
+	console.log('Fetching recipient address for', username, platform);
 	try {
 		const data = await getRecipientAddress(username, platform);
 		console.log('Recipient data:', data);

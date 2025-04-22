@@ -23,7 +23,17 @@
 
 	"permissions": ["storage", "tabs", "activeTab", "scripting"],
 
-	"host_permissions": ["https://www.youtube.com/*", "https://github.com/*"],
+	"host_permissions": [
+		"https://www.youtube.com/*",
+		"https://github.com/*",
+		"https://x.com/*",
+		"https://superpa.ge/*",
+		"https://www.superpa.ge/*"
+	],
+
+	"background": {
+		"service_worker": "serviceWorker.js"
+	},
 
 	"content_scripts": [
 		{
@@ -32,12 +42,12 @@
 			"run_at": "document_idle"
 		},
 		{
-			"matches": ["https://github.com/*"],
+			"matches": ["https://github.com/*", "https://www.github.com/*"],
 			"js": ["github.js"],
 			"run_at": "document_idle"
 		},
 		{
-			"matches": ["https://x.com/*"],
+			"matches": ["https://x.com/*", "https://www.x.com/*"],
 			"js": ["x.js"],
 			"run_at": "document_idle"
 		}
