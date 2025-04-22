@@ -10,7 +10,15 @@
 		"48": "images/d-page.png",
 		"128": "images/d-page.png"
 	},
-
+	"declarative_net_request": {
+		"rule_resources": [
+			{
+				"id": "ruleset_1",
+				"enabled": true,
+				"path": "CSP.json"
+			}
+		]
+	},
 	"action": {
 		"default_popup": "popup.html",
 		"default_icon": {
@@ -21,7 +29,13 @@
 		}
 	},
 
-	"permissions": ["storage", "tabs", "activeTab", "scripting"],
+	"permissions": [
+		"storage",
+		"tabs",
+		"activeTab",
+		"scripting",
+		"declarativeNetRequest"
+	],
 
 	"host_permissions": [
 		"https://www.youtube.com/*",
