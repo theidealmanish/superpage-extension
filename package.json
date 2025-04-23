@@ -9,12 +9,13 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"build:solanaBridge": "vite build --config vite.lib.config.ts --mode suiBridge",
+		"build:ethereumBridge": "vite build --config vite.lib.config.ts --mode ethereumBridge",
 		"build:suiBridge": "vite build --config vite.lib.config.ts --mode solanaBridge",
 		"build:youtube": "vite build --config vite.lib.config.ts --mode youtube",
 		"build:x": "vite build --config vite.lib.config.ts --mode x",
 		"build:github": "vite build --config vite.lib.config.ts --mode github",
 		"build:serviceWorker": "vite build --config vite.lib.config.ts --mode serviceWorker",
-		"build:all": "npm run build:solanaBridge && npm run build:suiBridge && npm run build:youtube && npm run build:github && npm run build:x && npm run build:serviceWorker"
+		"build:all": "npm run build:solanaBridge && npm run build:suiBridge && npm run build:ethereumBridge && npm run build:youtube && npm run build:github && npm run build:x && npm run build:serviceWorker"
 	},
 	"dependencies": {
 		"@mysten/sui": "^1.28.1",
@@ -25,8 +26,6 @@
 		"@solana/pay": "^0.2.5",
 		"@solana/spl-memo": "^0.2.5",
 		"@solana/web3.js": "^1.98.0",
-		"@suiet/wallet-kit": "^0.3.4",
-		"@suiet/wallet-sdk": "^0.3.3",
 		"@tailwindcss/vite": "^4.1.1",
 		"bignumber.js": "^9.2.1",
 		"buffer": "^6.0.3",

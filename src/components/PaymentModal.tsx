@@ -198,13 +198,13 @@ export const createPopup = async (username: string, platform: string) => {
                     Solana (SOL)
                 </option>
                 <option value="sui">
-                    SUI Network
+                    SUI Network (SUI)
                 </option>
                 <option value="stellar">
                     Stellar (XLM)
                 </option>
-                <option value="pharos">
-                    Pharos (PRS)
+                <option value="ethereum">
+                    Pharos (ETH)
                 </option>
             </select>
         </div>
@@ -279,8 +279,8 @@ export const createPopup = async (username: string, platform: string) => {
 				case 'stellar':
 					currencyLabel.textContent = 'XLM';
 					break;
-				case 'pharos':
-					currencyLabel.textContent = 'PRS';
+				case 'ethereum':
+					currencyLabel.textContent = 'ETH';
 					break;
 				default:
 					currencyLabel.textContent = 'SOL';
@@ -300,8 +300,8 @@ export const createPopup = async (username: string, platform: string) => {
 				case 'stellar':
 					walletName = 'Stellar Wallet';
 					break;
-				case 'pharos':
-					walletName = 'Pharos Wallet';
+				case 'ethereum':
+					walletName = 'Metamask Wallet';
 					break;
 			}
 			extensionButton.innerHTML = `<span>Pay with ${walletName}</span>`;
@@ -396,8 +396,8 @@ export const createPopup = async (username: string, platform: string) => {
 							case 'stellar':
 								explorerUrl = `https://stellar.expert/explorer/public/tx/${txid}`;
 								break;
-							case 'pharos':
-								explorerUrl = `https://pharosscan.com/tx/${txid}`;
+							case 'ethereum':
+								explorerUrl = `https://pharosscan.xyz/tx/${txid}`;
 								break;
 							default:
 								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
@@ -466,8 +466,8 @@ export const createPopup = async (username: string, platform: string) => {
 								case 'stellar':
 									walletName = 'Stellar Wallet';
 									break;
-								case 'pharos':
-									walletName = 'Pharos Wallet';
+								case 'ethereum':
+									walletName = 'Metamask Wallet';
 									break;
 							}
 
@@ -666,7 +666,7 @@ async function pollForTransaction(
 							explorerUrl = `https://stellar.expert/explorer/public/tx/${signatureInfo.signature}`;
 							explorerLabel = 'View on Stellar Expert';
 							break;
-						case 'pharos':
+						case 'ethereum':
 							explorerUrl = `https://pharosscan.com/tx/${signatureInfo.signature}`;
 							explorerLabel = 'View on Pharos Explorer';
 							break;

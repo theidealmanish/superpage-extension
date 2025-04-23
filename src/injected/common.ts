@@ -93,6 +93,16 @@ export function injectWalletBridge(): void {
 		suiScript.type = 'module';
 		(document.head || document.documentElement).appendChild(suiScript);
 	}
+
+	// Inject ETH bridge
+	const ethId = 'eth-bridge-script';
+	if (!document.getElementById(ethId)) {
+		const ethScript = document.createElement('script');
+		ethScript.id = ethId;
+		ethScript.src = chrome.runtime.getURL('ethereumBridge.js');
+		ethScript.type = 'module';
+		(document.head || document.documentElement).appendChild(ethScript);
+	}
 }
 
 export function waitForElement(

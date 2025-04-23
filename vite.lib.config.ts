@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
 	const entryMap: Record<string, string> = {
 		suiBridge: 'src/injected/suiBridge.ts',
 		solanaBridge: 'src/injected/solanaBridge.ts',
+		ethereumBridge: 'src/injected/ethereumBridge.ts',
 		youtube: 'src/content/youtube.ts',
 		github: 'src/content/github.ts',
 		x: 'src/content/x.ts',
