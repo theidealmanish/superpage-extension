@@ -28,6 +28,6 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 				console.error('Background fetch error:', err);
 				sendResponse({ error: 'NETWORK_ERROR' });
 			});
-		return true; // tell Chrome we’ll call sendResponse asynchronously
+		return true;
 	}
 });

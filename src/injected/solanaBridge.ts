@@ -19,9 +19,9 @@ window.Buffer = Buffer;
 	}
 
 	window.addEventListener('message', async (event) => {
-		if (event.data?.type === 'SUPERPAGE_TIP') {
+		if (event.data?.type === 'SUPERPAGE_TIP_SOLANA') {
 			const recipient = new PublicKey(event.data.recipient);
-			const lamports = event.data.lamports;
+			const lamports = event.data.amount * 1_000_000_000;
 			const message = event.data.message || 'SuperPay Tip';
 
 			console.log(

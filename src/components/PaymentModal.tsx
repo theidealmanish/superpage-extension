@@ -9,6 +9,7 @@ import { PublicKey, Connection, clusterApiUrl, Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Buffer } from 'buffer';
 import getRecipientAddress from '@/lib/getReciepientAddress';
+
 // Make sure Buffer is available globally
 if (typeof window !== 'undefined') {
 	window.Buffer = Buffer;
@@ -89,6 +90,32 @@ export const createPopup = async (username: string, platform: string) => {
             background: #fff !important;
             color: #333 !important;
         }
+        #superpage-popup select {
+            width: 100% !important;
+            padding: 10px 12px !important;
+            border: 1px solid #ccc !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            color: #333 !important;
+            background-color: white !important;
+            appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            cursor: pointer !important;
+        }
+        #superpage-popup select:focus {
+            outline: none !important;
+            border-color: #8b5cf6 !important;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+        }
+        #superpage-popup .network-icon {
+            width: 18px !important;
+            height: 18px !important;
+            margin-right: 8px !important;
+            vertical-align: middle !important;
+        }
         @keyframes spin {
             0% { transform: rotate(0deg) !important; }
             100% { transform: rotate(360deg) !important; }
@@ -143,6 +170,16 @@ export const createPopup = async (username: string, platform: string) => {
             resize: none !important;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
         }
+        #superpage-popup .form-group {
+            margin-bottom: 16px !important;
+        }
+        #superpage-popup label {
+            font-size: 14px !important;
+            color: #444 !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            display: block !important;
+            margin-bottom: 6px !important;
+        }
     </style>
     <div style="display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:16px !important">
         <div style="display:flex !important;align-items:center !important;gap:8px !important">
@@ -154,22 +191,44 @@ export const createPopup = async (username: string, platform: string) => {
     <div>
         <p style="text-align:center !important;color:#666 !important;margin-bottom:16px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;font-size:14px !important;">Send a tip to <strong style="color:#8b5cf6 !important;">${username}</strong></p>
         
-        <label style="font-size:14px !important;color:#444 !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;display:block !important;">Amount</label>
-        <div style="position:relative !important;margin-top:4px !important;margin-bottom:16px !important">
-            <input id="superpage-amount" type="number" min="0.001" step="0.001" placeholder="0.05"
-                style="width:100% !important;padding:10px 40px 10px 12px !important;border:1px solid #ccc !important;border-radius:8px !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;color:#333 !important;background-color:white !important;">
-            <span style="position:absolute !important;right:12px !important;top:50% !important;transform:translateY(-50%) !important;color:#999 !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;pointer-events:none !important;">SOL</span>
+        <div class="form-group">
+            <label for="superpage-network">Network</label>
+            <select id="superpage-network">
+                <option value="solana" selected>
+                    Solana (SOL)
+                </option>
+                <option value="sui">
+                    SUI Network
+                </option>
+                <option value="stellar">
+                    Stellar (XLM)
+                </option>
+                <option value="pharos">
+                    Pharos (PRS)
+                </option>
+            </select>
         </div>
         
-        <label style="font-size:14px !important;color:#444 !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;display:block !important;margin-top:12px !important;">Message (optional)</label>
-        <div style="position:relative !important;margin-top:4px !important;margin-bottom:24px !important">
-            <textarea id="superpage-message" placeholder="Add a personal message..." rows="2"
-                style="width:100% !important;padding:10px 12px !important;border:1px solid #ccc !important;border-radius:8px !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;color:#333 !important;background-color:white !important;"></textarea>
+        <div class="form-group">
+            <label for="superpage-amount">Amount</label>
+            <div style="position:relative !important;margin-top:4px !important;">
+                <input id="superpage-amount" type="number" min="0.001" step="0.001" placeholder="0.05"
+                    style="width:100% !important;padding:10px 40px 10px 12px !important;border:1px solid #ccc !important;border-radius:8px !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;color:#333 !important;background-color:white !important;">
+                <span id="currency-label" style="position:absolute !important;right:12px !important;top:50% !important;transform:translateY(-50%) !important;color:#999 !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;pointer-events:none !important;">SOL</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="superpage-message">Message (optional)</label>
+            <div>
+                <textarea id="superpage-message" placeholder="Add a personal message..." rows="2"
+                    style="width:100% !important;padding:10px 12px !important;border:1px solid #ccc !important;border-radius:8px !important;font-size:14px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;color:#333 !important;background-color:white !important;"></textarea>
+            </div>
         </div>
     </div>
     <div style="display:flex !important;flex-direction:column !important;gap:12px !important" id="buttons-container">
         <button id="superpage-use-extension" class="super-btn primary">
-            <span>Pay with Phantom Extension</span>
+            <span>Pay with Wallet Extension</span>
         </button>
         <button id="superpage-send" class="super-btn secondary">
             <span>Generate QR Code</span>
@@ -177,7 +236,7 @@ export const createPopup = async (username: string, platform: string) => {
     </div>
     <div id="qr-code" style="display:none !important;flex-direction:column !important;align-items:center !important;margin-top:24px !important">
         <div id="qr-img" style="background-color:white !important;"></div>
-        <p style="font-size:12px !important;color:#888 !important;margin-top:8px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;text-align:center !important;">Scan with a Solana Pay compatible wallet</p>
+        <p style="font-size:12px !important;color:#888 !important;margin-top:8px !important;font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;text-align:center !important;">Scan with a compatible wallet</p>
     </div>
 `;
 	document.body.appendChild(popup);
@@ -191,7 +250,65 @@ export const createPopup = async (username: string, platform: string) => {
 		popup.remove();
 	});
 
-	// Update the phantom extension click handler to include the message
+	// Handle currency label update based on selected network
+	const networkSelector = document.getElementById(
+		'superpage-network'
+	) as HTMLSelectElement;
+	const currencyLabel = document.getElementById('currency-label');
+	const extensionButton = document.getElementById('superpage-use-extension');
+
+	// Initialize based on default selection
+	updateInterfaceForNetwork('solana');
+
+	if (networkSelector) {
+		networkSelector.addEventListener('change', () => {
+			const selectedNetwork = networkSelector.value;
+			updateInterfaceForNetwork(selectedNetwork);
+		});
+	}
+
+	function updateInterfaceForNetwork(network: string) {
+		if (currencyLabel) {
+			switch (network) {
+				case 'solana':
+					currencyLabel.textContent = 'SOL';
+					break;
+				case 'sui':
+					currencyLabel.textContent = 'SUI';
+					break;
+				case 'stellar':
+					currencyLabel.textContent = 'XLM';
+					break;
+				case 'pharos':
+					currencyLabel.textContent = 'PRS';
+					break;
+				default:
+					currencyLabel.textContent = 'SOL';
+			}
+		}
+
+		// Update wallet button text based on network
+		if (extensionButton) {
+			let walletName = 'Wallet';
+			switch (network) {
+				case 'solana':
+					walletName = 'Phantom';
+					break;
+				case 'sui':
+					walletName = 'Sui Wallet';
+					break;
+				case 'stellar':
+					walletName = 'Stellar Wallet';
+					break;
+				case 'pharos':
+					walletName = 'Pharos Wallet';
+					break;
+			}
+			extensionButton.innerHTML = `<span>Pay with ${walletName}</span>`;
+		}
+	}
+
+	// Update the phantom extension click handler to include the message and network
 	document
 		.getElementById('superpage-use-extension')
 		?.addEventListener('click', () => {
@@ -201,7 +318,7 @@ export const createPopup = async (username: string, platform: string) => {
 			const amount = parseFloat(amountStr);
 			if (!amount || amount < 0.001) {
 				// Create toast notification instead of alert
-				showToast('Please enter a valid amount (minimum 0.001 SOL)');
+				showToast('Please enter a valid amount (minimum 0.001)');
 				return;
 			}
 
@@ -209,6 +326,11 @@ export const createPopup = async (username: string, platform: string) => {
 			const messageText = (
 				document.getElementById('superpage-message') as HTMLTextAreaElement
 			).value.trim();
+
+			// Get selected network
+			const selectedNetwork = (
+				document.getElementById('superpage-network') as HTMLSelectElement
+			).value;
 
 			// Add transaction processing UI
 			const btnElement = document.getElementById('superpage-use-extension');
@@ -241,6 +363,7 @@ export const createPopup = async (username: string, platform: string) => {
 							body: JSON.stringify({
 								to: user._id,
 								amount: amount,
+								network: selectedNetwork,
 								message: messageText,
 							}),
 						})
@@ -260,15 +383,33 @@ export const createPopup = async (username: string, platform: string) => {
 									error.message
 								);
 							});
-						const solscanUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
 
-						// Create a success message with Solscan link
+						// Get appropriate explorer URL based on network
+						let explorerUrl = '';
+						switch (selectedNetwork) {
+							case 'solana':
+								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
+								break;
+							case 'sui':
+								explorerUrl = `https://explorer.sui.io/txblock/${txid}?network=devnet`;
+								break;
+							case 'stellar':
+								explorerUrl = `https://stellar.expert/explorer/public/tx/${txid}`;
+								break;
+							case 'pharos':
+								explorerUrl = `https://pharosscan.com/tx/${txid}`;
+								break;
+							default:
+								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
+						}
+
+						// Create a success message with explorer link
 						const statusContainer = document.createElement('div');
 						statusContainer.style.cssText =
 							'margin-top: 24px !important; text-align: center !important;';
 						statusContainer.innerHTML = `
                     <div class="payment-text">Payment successful! ✓</div>
-                    <a href="${solscanUrl}" target="_blank" class="solscan-link">
+                    <a href="${explorerUrl}" target="_blank" class="solscan-link">
                         <span>View transaction</span>
                         <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px !important; width: 16px !important; margin-left: 4px !important;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -313,13 +454,24 @@ export const createPopup = async (username: string, platform: string) => {
 
 						// Reset button state
 						if (btnElement) {
-							btnElement.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" style="height: 20px !important; width: 20px !important; margin-right: 8px !important;" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
-                            <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
-                        </svg>
-                        Pay with Phantom Extension
-                    `;
+							// Get wallet name based on network
+							let walletName = 'Wallet';
+							switch (selectedNetwork) {
+								case 'solana':
+									walletName = 'Phantom';
+									break;
+								case 'sui':
+									walletName = 'Sui Wallet';
+									break;
+								case 'stellar':
+									walletName = 'Stellar Wallet';
+									break;
+								case 'pharos':
+									walletName = 'Pharos Wallet';
+									break;
+							}
+
+							btnElement.innerHTML = `<span>Pay with ${walletName}</span>`;
 							btnElement.removeAttribute('disabled');
 							btnElement.style.opacity = '';
 							btnElement.style.cursor = '';
@@ -331,13 +483,14 @@ export const createPopup = async (username: string, platform: string) => {
 			// Add the event listener before sending the message
 			window.addEventListener('message', transactionListener);
 
-			// Send the message to the injected script with the optional message
+			// Send the message to the injected script with the optional message and network
 			window.postMessage(
 				{
-					type: 'SUPERPAGE_TIP',
+					type: `SUPERPAGE_TIP_${networkSelector.value.toUpperCase()}`,
 					recipient,
-					lamports: amount * 1_000_000_000,
+					amount,
 					message: messageText || undefined,
+					network: selectedNetwork,
 				},
 				'*'
 			);
@@ -352,7 +505,7 @@ export const createPopup = async (username: string, platform: string) => {
 			).value;
 			const amount = parseFloat(amountStr);
 			if (!amount || amount < 0.001) {
-				showToast('Please enter a valid amount (minimum 0.001 SOL)');
+				showToast('Please enter a valid amount (minimum 0.001)');
 				return;
 			}
 
@@ -363,6 +516,11 @@ export const createPopup = async (username: string, platform: string) => {
 			const finalMessage = messageText
 				? `${messageText}`
 				: `Tip to ${username}`;
+
+			// Get selected network
+			const selectedNetwork = (
+				document.getElementById('superpage-network') as HTMLSelectElement
+			).value;
 
 			try {
 				// Generate a unique reference for this payment
@@ -388,9 +546,9 @@ export const createPopup = async (username: string, platform: string) => {
 					recipient: recipientPubkey,
 					amount: new BigNumber(amount),
 					reference,
-					label: 'SuperPage Tip',
+					label: `SuperPage ${selectedNetwork.toUpperCase()} Tip`,
 					message: finalMessage,
-					memo: 'SuperPage',
+					memo: `SuperPage-${selectedNetwork}`,
 				});
 
 				// Get the QR code container ready
@@ -416,37 +574,42 @@ export const createPopup = async (username: string, platform: string) => {
 				qrContainer.appendChild(statusMsg);
 
 				// Begin polling for transaction
-				pollForTransaction(reference, recipientPubkey, amount, popup).then(
-					() => {
-						fetch('http://localhost:8000/api/transactions', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								to: user._id,
-								amount: amount,
-								message: messageText,
-							}),
+				pollForTransaction(
+					reference,
+					recipientPubkey,
+					amount,
+					popup,
+					selectedNetwork
+				).then(() => {
+					fetch('http://localhost:8000/api/transactions', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							to: user._id,
+							amount: amount,
+							message: messageText,
+							network: selectedNetwork,
+						}),
+					})
+						.then(async (res) => {
+							if (!res.ok) {
+								const errorData = await res.json();
+								throw new Error(errorData.message || 'Request failed');
+							}
+							return res.json();
 						})
-							.then(async (res) => {
-								if (!res.ok) {
-									const errorData = await res.json();
-									throw new Error(errorData.message || 'Request failed');
-								}
-								return res.json();
-							})
-							.then((data) => {
-								console.log('[SuperPay] Transaction recorded:', data);
-							})
-							.catch((error) => {
-								console.error(
-									'[SuperPay] Error submitting transaction:',
-									error.message
-								);
-							});
-					}
-				);
+						.then((data) => {
+							console.log('[SuperPay] Transaction recorded:', data);
+						})
+						.catch((error) => {
+							console.error(
+								'[SuperPay] Error submitting transaction:',
+								error.message
+							);
+						});
+				});
 			} catch (error) {
 				console.error('[SuperPay] QR generation error:', error);
 				showToast('Error generating QR code. Please try again.', 'error');
@@ -454,12 +617,13 @@ export const createPopup = async (username: string, platform: string) => {
 		});
 };
 
-// Function to poll for transaction completion
+// Function to poll for transaction completion with network support
 async function pollForTransaction(
 	reference: PublicKey,
 	recipient: PublicKey,
 	amount: number,
-	popupElement: HTMLElement
+	popupElement: HTMLElement,
+	network: string = 'solana'
 ) {
 	const statusElement = document.getElementById('payment-status');
 	let paymentComplete = false;
@@ -485,8 +649,31 @@ async function pollForTransaction(
 				clearInterval(interval);
 
 				if (statusElement) {
-					// Create success message with Solscan link
-					const solscanUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
+					// Get appropriate explorer URL based on network
+					let explorerLabel = '';
+					let explorerUrl = '';
+
+					switch (network) {
+						case 'solana':
+							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
+							explorerLabel = 'View on Solscan';
+							break;
+						case 'sui':
+							explorerUrl = `https://explorer.sui.io/txblock/${signatureInfo.signature}?network=devnet`;
+							explorerLabel = 'View on Sui Explorer';
+							break;
+						case 'stellar':
+							explorerUrl = `https://stellar.expert/explorer/public/tx/${signatureInfo.signature}`;
+							explorerLabel = 'View on Stellar Expert';
+							break;
+						case 'pharos':
+							explorerUrl = `https://pharosscan.com/tx/${signatureInfo.signature}`;
+							explorerLabel = 'View on Pharos Explorer';
+							break;
+						default:
+							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
+							explorerLabel = 'View on Explorer';
+					}
 
 					// Stop any animations
 					statusElement.style.animation = 'none';
@@ -494,8 +681,8 @@ async function pollForTransaction(
 					// Update the status element with a clickable success button
 					statusElement.innerHTML = `
                         <div style="color: #10B981; font-weight: 500; margin-bottom: 8px;">Payment successful! ✓</div>
-                        <a href="${solscanUrl}" target="_blank" class="solscan-link">
-                            <span>View on Solscan</span>
+                        <a href="${explorerUrl}" target="_blank" class="solscan-link">
+                            <span>${explorerLabel}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-left: 4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
@@ -505,7 +692,7 @@ async function pollForTransaction(
 
 				showToast('Payment confirmed! Thank you.', 'success');
 
-				// Keep the modal open for 5 seconds to allow clicking the Solscan link
+				// Keep the modal open for 5 seconds to allow clicking the explorer link
 				setTimeout(() => {
 					document.getElementById('superpage-backdrop')?.remove();
 					popupElement.remove();

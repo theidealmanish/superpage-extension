@@ -73,15 +73,26 @@ export function injectCustomStyles(): void {
 	document.head.appendChild(style);
 }
 
-export function injectPhantomBridge(): void {
-	const id = 'phantom-bridge-script';
-	if (document.getElementById(id)) return;
+export function injectWalletBridge(): void {
+	// Inject Solana bridge
+	const solanaId = 'solana-bridge-script';
+	if (!document.getElementById(solanaId)) {
+		const solanaScript = document.createElement('script');
+		solanaScript.id = solanaId;
+		solanaScript.src = chrome.runtime.getURL('solanaBridge.js');
+		solanaScript.type = 'module';
+		(document.head || document.documentElement).appendChild(solanaScript);
+	}
 
-	const script = document.createElement('script');
-	script.id = id;
-	script.src = chrome.runtime.getURL('phantomBridge.js');
-	script.type = 'module';
-	(document.head || document.documentElement).appendChild(script);
+	// Inject SUI bridge
+	const suiId = 'sui-bridge-script';
+	if (!document.getElementById(suiId)) {
+		const suiScript = document.createElement('script');
+		suiScript.id = suiId;
+		suiScript.src = chrome.runtime.getURL('suiBridge.js');
+		suiScript.type = 'module';
+		(document.head || document.documentElement).appendChild(suiScript);
+	}
 }
 
 export function waitForElement(

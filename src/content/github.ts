@@ -2,11 +2,11 @@
 import { createPopup } from '@/components/PaymentModal';
 import {
 	injectCustomStyles,
-	injectPhantomBridge,
+	injectWalletBridge,
 	waitForElement,
 } from '../injected/common';
 
-injectPhantomBridge();
+injectWalletBridge();
 
 // Improved function to get the username from different contexts
 const getUsername = (contextElement?: Element | null): string => {

@@ -5,7 +5,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
 	const entryMap: Record<string, string> = {
-		phantomBridge: 'src/injected/phantomBridge.ts',
+		suiBridge: 'src/injected/suiBridge.ts',
+		solanaBridge: 'src/injected/solanaBridge.ts',
 		youtube: 'src/content/youtube.ts',
 		github: 'src/content/github.ts',
 		x: 'src/content/x.ts',

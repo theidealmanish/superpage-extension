@@ -1,7 +1,7 @@
 import { createPopup } from '@/components/PaymentModal';
-import { waitForElement, injectPhantomBridge } from '@/injected/common';
+import { waitForElement, injectWalletBridge } from '@/injected/common';
 
-injectPhantomBridge();
+injectWalletBridge();
 
 function injectCustomStyles(): void {
 	const id = 'superpage-custom-styles';
