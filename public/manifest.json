@@ -68,7 +68,7 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["suiBridge.js", "solanaBridge.js", "ethereumBridge.js"],
+			"resources": ["solanaBridge.js", "ethereumBridge.js", "suiBridge.js"],
 			"matches": ["<all_urls>"]
 		}
 	]
