@@ -152,7 +152,7 @@ const injectTipButton = async () => {
 			'[data-testid="User-Name"]'
 		);
 		if (authorElement) {
-			// Username in Twitter starts with @, we want to extract just the name
+			// Username in x starts with @, we want to extract just the name
 			const usernameSpans = authorElement.querySelectorAll('span');
 			for (const span of usernameSpans) {
 				if (span.textContent && span.textContent.startsWith('@')) {
@@ -174,7 +174,7 @@ const injectTipButton = async () => {
 		username = username || 'this creator';
 
 		console.log('[SuperPay] Opening tip modal for:', username);
-		createPopup(username, 'twitter');
+		createPopup(username, 'x');
 	};
 
 	// Add button to wrapper
@@ -262,7 +262,7 @@ const processTweetTimeline = () => {
 
 			username = username || 'this creator';
 			console.log('[SuperPay] Opening tip modal from timeline for:', username);
-			createPopup(username, 'twitter');
+			createPopup(username, 'x');
 		};
 
 		// Add button to wrapper
