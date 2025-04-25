@@ -8,7 +8,7 @@ import {
 import { PublicKey, Connection, clusterApiUrl, Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { Buffer } from 'buffer';
-import getRecipientAddress from '@/lib/getReciepientAddress';
+import getRecipientAddress from '@/lib/getRecipientAddress';
 
 // Make sure Buffer is available globally
 if (typeof window !== 'undefined') {
@@ -26,10 +26,9 @@ export const createPopup = async (username: string, platform: string) => {
 	let user;
 	console.log('Fetching recipient address for', username, platform);
 	try {
-		const data = await getRecipientAddress(username, platform);
-		console.log('Recipient data:', data);
-		user = data.data.user;
-		recipient = data.data.user.walletAddress;
+		const data: any = await getRecipientAddress(username, platform);
+		console.log('Recipient data:', data.wallets);
+		recipient = data.wallets['sui'];
 		console.log('Recipient wallet:', recipient);
 	} catch (error) {
 		console.error('Error fetching recipient address:', error);
@@ -352,16 +351,36 @@ export const createPopup = async (username: string, platform: string) => {
 				if (event.data?.type === 'SUPERPAGE_TIP_RESULT') {
 					window.removeEventListener('message', transactionListener);
 
+					// TODO: Transaction was successful
 					if (event.data.success) {
-						// Transaction was successful
 						const txid = event.data.tx;
-						fetch('http://localhost:8000/api/transactions', {
+
+						// Get appropriate explorer URL based on network
+						let explorerUrl = '';
+						switch (selectedNetwork) {
+							case 'solana':
+								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
+								break;
+							case 'sui':
+								explorerUrl = `https://testnet.suivision.xyz/txblock/${txid}`;
+								break;
+							case 'stellar':
+								explorerUrl = `https://stellar.expert/explorer/public/tx/${txid}`;
+								break;
+							case 'ethereum':
+								explorerUrl = `https://pharosscan.xyz/tx/${txid}`;
+								break;
+							default:
+								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
+						}
+
+						fetch('http://localhost:8000/transactions', {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
 							},
 							body: JSON.stringify({
-								to: user._id,
+								to: user!._id,
 								amount: amount,
 								network: selectedNetwork,
 								message: messageText,
@@ -383,25 +402,6 @@ export const createPopup = async (username: string, platform: string) => {
 									error.message
 								);
 							});
-
-						// Get appropriate explorer URL based on network
-						let explorerUrl = '';
-						switch (selectedNetwork) {
-							case 'solana':
-								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
-								break;
-							case 'sui':
-								explorerUrl = `https://explorer.sui.io/txblock/${txid}?network=devnet`;
-								break;
-							case 'stellar':
-								explorerUrl = `https://stellar.expert/explorer/public/tx/${txid}`;
-								break;
-							case 'ethereum':
-								explorerUrl = `https://pharosscan.xyz/tx/${txid}`;
-								break;
-							default:
-								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
-						}
 
 						// Create a success message with explorer link
 						const statusContainer = document.createElement('div');
@@ -497,232 +497,232 @@ export const createPopup = async (username: string, platform: string) => {
 		});
 
 	// Update the QR code generation part in the event listener
-	document
-		.getElementById('superpage-send')
-		?.addEventListener('click', async () => {
-			const amountStr = (
-				document.getElementById('superpage-amount') as HTMLInputElement
-			).value;
-			const amount = parseFloat(amountStr);
-			if (!amount || amount < 0.001) {
-				showToast('Please enter a valid amount (minimum 0.001)');
-				return;
-			}
+	// document
+	// 	.getElementById('superpage-send')
+	// 	?.addEventListener('click', async () => {
+	// 		const amountStr = (
+	// 			document.getElementById('superpage-amount') as HTMLInputElement
+	// 		).value;
+	// 		const amount = parseFloat(amountStr);
+	// 		if (!amount || amount < 0.001) {
+	// 			showToast('Please enter a valid amount (minimum 0.001)');
+	// 			return;
+	// 		}
 
-			// Get the user's message
-			const messageText = (
-				document.getElementById('superpage-message') as HTMLTextAreaElement
-			).value.trim();
-			const finalMessage = messageText
-				? `${messageText}`
-				: `Tip to ${username}`;
+	// 		// Get the user's message
+	// 		const messageText = (
+	// 			document.getElementById('superpage-message') as HTMLTextAreaElement
+	// 		).value.trim();
+	// 		const finalMessage = messageText
+	// 			? `${messageText}`
+	// 			: `Tip to ${username}`;
 
-			// Get selected network
-			const selectedNetwork = (
-				document.getElementById('superpage-network') as HTMLSelectElement
-			).value;
+	// 		// Get selected network
+	// 		const selectedNetwork = (
+	// 			document.getElementById('superpage-network') as HTMLSelectElement
+	// 		).value;
 
-			try {
-				// Generate a unique reference for this payment
-				const reference = Keypair.generate().publicKey;
+	// 		try {
+	// 			// Generate a unique reference for this payment
+	// 			const reference = Keypair.generate().publicKey;
 
-				// First get the recipient address data
-				let recipientPubkey;
-				try {
-					const data = await getRecipientAddress(username, platform);
-					console.log('Recipient data:', data);
-					if (!data?.data?.user?.walletAddress) {
-						throw new Error('No wallet address found');
-					}
-					recipientPubkey = new PublicKey(data.data.user.walletAddress);
-				} catch (error) {
-					console.error('Error fetching recipient address:', error);
-					showToast('This user is not registered on SuperPage.', 'error');
-					return;
-				}
+	// 			// First get the recipient address data
+	// 			let recipientPubkey;
+	// 			try {
+	// 				const data = await getRecipientAddress(username, platform);
+	// 				console.log('Recipient data:', data);
+	// 				if (!data?.data?.user?.walletAddress) {
+	// 					throw new Error('No wallet address found');
+	// 				}
+	// 				recipientPubkey = new PublicKey(data.data.user.walletAddress);
+	// 			} catch (error) {
+	// 				console.error('Error fetching recipient address:', error);
+	// 				showToast('This user is not registered on SuperPage.', 'error');
+	// 				return;
+	// 			}
 
-				// Now create the URL with the valid recipient address
-				const url = encodeURL({
-					recipient: recipientPubkey,
-					amount: new BigNumber(amount),
-					reference,
-					label: `SuperPage ${selectedNetwork.toUpperCase()} Tip`,
-					message: finalMessage,
-					memo: `SuperPage-${selectedNetwork}`,
-				});
+	// 			// Now create the URL with the valid recipient address
+	// 			const url = encodeURL({
+	// 				recipient: recipientPubkey,
+	// 				amount: new BigNumber(amount),
+	// 				reference,
+	// 				label: `SuperPage ${selectedNetwork.toUpperCase()} Tip`,
+	// 				message: finalMessage,
+	// 				memo: `SuperPage-${selectedNetwork}`,
+	// 			});
 
-				// Get the QR code container ready
-				const qrContainer = document.getElementById('qr-code') as HTMLElement;
-				qrContainer.style.display = 'flex';
-				qrContainer.style.flexDirection = 'column';
-				qrContainer.style.alignItems = 'center';
-				qrContainer.style.marginTop = '24px';
-				qrContainer.innerHTML = ''; // Clear any existing content
+	// 			// Get the QR code container ready
+	// 			const qrContainer = document.getElementById('qr-code') as HTMLElement;
+	// 			qrContainer.style.display = 'flex';
+	// 			qrContainer.style.flexDirection = 'column';
+	// 			qrContainer.style.alignItems = 'center';
+	// 			qrContainer.style.marginTop = '24px';
+	// 			qrContainer.innerHTML = ''; // Clear any existing content
 
-				// Create QR code
-				const qr = createQR(url, 256);
-				const qrDiv = document.createElement('div');
-				qrDiv.id = 'qr-img';
-				qrContainer.appendChild(qrDiv);
-				qr.append(qrDiv);
+	// 			// Create QR code
+	// 			const qr = createQR(url, 256);
+	// 			const qrDiv = document.createElement('div');
+	// 			qrDiv.id = 'qr-img';
+	// 			qrContainer.appendChild(qrDiv);
+	// 			qr.append(qrDiv);
 
-				// Add status message
-				const statusMsg = document.createElement('div');
-				statusMsg.id = 'payment-status';
-				statusMsg.className = 'payment-status pulse-animation';
-				statusMsg.textContent = 'Waiting for payment...';
-				qrContainer.appendChild(statusMsg);
+	// 			// Add status message
+	// 			const statusMsg = document.createElement('div');
+	// 			statusMsg.id = 'payment-status';
+	// 			statusMsg.className = 'payment-status pulse-animation';
+	// 			statusMsg.textContent = 'Waiting for payment...';
+	// 			qrContainer.appendChild(statusMsg);
 
-				// Begin polling for transaction
-				pollForTransaction(
-					reference,
-					recipientPubkey,
-					amount,
-					popup,
-					selectedNetwork
-				).then(() => {
-					fetch('http://localhost:8000/api/transactions', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							to: user._id,
-							amount: amount,
-							message: messageText,
-							network: selectedNetwork,
-						}),
-					})
-						.then(async (res) => {
-							if (!res.ok) {
-								const errorData = await res.json();
-								throw new Error(errorData.message || 'Request failed');
-							}
-							return res.json();
-						})
-						.then((data) => {
-							console.log('[SuperPay] Transaction recorded:', data);
-						})
-						.catch((error) => {
-							console.error(
-								'[SuperPay] Error submitting transaction:',
-								error.message
-							);
-						});
-				});
-			} catch (error) {
-				console.error('[SuperPay] QR generation error:', error);
-				showToast('Error generating QR code. Please try again.', 'error');
-			}
-		});
+	// 			// Begin polling for transaction
+	// 			pollForTransaction(
+	// 				reference,
+	// 				recipientPubkey,
+	// 				amount,
+	// 				popup,
+	// 				selectedNetwork
+	// 			).then(() => {
+	// 				fetch('http://localhost:8000/api/transactions', {
+	// 					method: 'POST',
+	// 					headers: {
+	// 						'Content-Type': 'application/json',
+	// 					},
+	// 					body: JSON.stringify({
+	// 						to: user!._id,
+	// 						amount: amount,
+	// 						message: messageText,
+	// 						network: selectedNetwork,
+	// 					}),
+	// 				})
+	// 					.then(async (res) => {
+	// 						if (!res.ok) {
+	// 							const errorData = await res.json();
+	// 							throw new Error(errorData.message || 'Request failed');
+	// 						}
+	// 						return res.json();
+	// 					})
+	// 					.then((data) => {
+	// 						console.log('[SuperPay] Transaction recorded:', data);
+	// 					})
+	// 					.catch((error) => {
+	// 						console.error(
+	// 							'[SuperPay] Error submitting transaction:',
+	// 							error.message
+	// 						);
+	// 					});
+	// 			});
+	// 		} catch (error) {
+	// 			console.error('[SuperPay] QR generation error:', error);
+	// 			showToast('Error generating QR code. Please try again.', 'error');
+	// 		}
+	// 	});
 };
 
 // Function to poll for transaction completion with network support
-async function pollForTransaction(
-	reference: PublicKey,
-	recipient: PublicKey,
-	amount: number,
-	popupElement: HTMLElement,
-	network: string = 'solana'
-) {
-	const statusElement = document.getElementById('payment-status');
-	let paymentComplete = false;
+// async function pollForTransaction(
+// 	reference: PublicKey,
+// 	recipient: PublicKey,
+// 	amount: number,
+// 	popupElement: HTMLElement,
+// 	network: string = 'solana'
+// ) {
+// 	const statusElement = document.getElementById('payment-status');
+// 	let paymentComplete = false;
 
-	const interval = setInterval(async () => {
-		try {
-			if (statusElement) {
-				statusElement.textContent = 'Checking for payment...';
-			}
+// 	const interval = setInterval(async () => {
+// 		try {
+// 			if (statusElement) {
+// 				statusElement.textContent = 'Checking for payment...';
+// 			}
 
-			const signatureInfo = await findReference(connection, reference, {
-				finality: 'confirmed',
-			});
+// 			const signatureInfo = await findReference(connection, reference, {
+// 				finality: 'confirmed',
+// 			});
 
-			if (signatureInfo) {
-				await validateTransfer(connection, signatureInfo.signature, {
-					recipient,
-					amount: new BigNumber(amount),
-					reference,
-				});
+// 			if (signatureInfo) {
+// 				await validateTransfer(connection, signatureInfo.signature, {
+// 					recipient,
+// 					amount: new BigNumber(amount),
+// 					reference,
+// 				});
 
-				paymentComplete = true;
-				clearInterval(interval);
+// 				paymentComplete = true;
+// 				clearInterval(interval);
 
-				if (statusElement) {
-					// Get appropriate explorer URL based on network
-					let explorerLabel = '';
-					let explorerUrl = '';
+// 				if (statusElement) {
+// 					// Get appropriate explorer URL based on network
+// 					let explorerLabel = '';
+// 					let explorerUrl = '';
 
-					switch (network) {
-						case 'solana':
-							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
-							explorerLabel = 'View on Solscan';
-							break;
-						case 'sui':
-							explorerUrl = `https://explorer.sui.io/txblock/${signatureInfo.signature}?network=devnet`;
-							explorerLabel = 'View on Sui Explorer';
-							break;
-						case 'stellar':
-							explorerUrl = `https://stellar.expert/explorer/public/tx/${signatureInfo.signature}`;
-							explorerLabel = 'View on Stellar Expert';
-							break;
-						case 'ethereum':
-							explorerUrl = `https://pharosscan.com/tx/${signatureInfo.signature}`;
-							explorerLabel = 'View on Pharos Explorer';
-							break;
-						default:
-							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
-							explorerLabel = 'View on Explorer';
-					}
+// 					switch (network) {
+// 						case 'solana':
+// 							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
+// 							explorerLabel = 'View on Solscan';
+// 							break;
+// 						case 'sui':
+// 							explorerUrl = `https://explorer.sui.io/txblock/${signatureInfo.signature}?network=devnet`;
+// 							explorerLabel = 'View on Sui Explorer';
+// 							break;
+// 						case 'stellar':
+// 							explorerUrl = `https://stellar.expert/explorer/public/tx/${signatureInfo.signature}`;
+// 							explorerLabel = 'View on Stellar Expert';
+// 							break;
+// 						case 'ethereum':
+// 							explorerUrl = `https://pharosscan.com/tx/${signatureInfo.signature}`;
+// 							explorerLabel = 'View on Pharos Explorer';
+// 							break;
+// 						default:
+// 							explorerUrl = `https://solscan.io/tx/${signatureInfo.signature}?cluster=devnet`;
+// 							explorerLabel = 'View on Explorer';
+// 					}
 
-					// Stop any animations
-					statusElement.style.animation = 'none';
+// 					// Stop any animations
+// 					statusElement.style.animation = 'none';
 
-					// Update the status element with a clickable success button
-					statusElement.innerHTML = `
-                        <div style="color: #10B981; font-weight: 500; margin-bottom: 8px;">Payment successful! ✓</div>
-                        <a href="${explorerUrl}" target="_blank" class="solscan-link">
-                            <span>${explorerLabel}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-left: 4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </a>
-                    `;
-				}
+// 					// Update the status element with a clickable success button
+// 					statusElement.innerHTML = `
+//                         <div style="color: #10B981; font-weight: 500; margin-bottom: 8px;">Payment successful! ✓</div>
+//                         <a href="${explorerUrl}" target="_blank" class="solscan-link">
+//                             <span>${explorerLabel}</span>
+//                             <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-left: 4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+//                             </svg>
+//                         </a>
+//                     `;
+// 				}
 
-				showToast('Payment confirmed! Thank you.', 'success');
+// 				showToast('Payment confirmed! Thank you.', 'success');
 
-				// Keep the modal open for 5 seconds to allow clicking the explorer link
-				setTimeout(() => {
-					document.getElementById('superpage-backdrop')?.remove();
-					popupElement.remove();
-				}, 5000);
-			}
-		} catch (error: any) {
-			if (
-				error.name !== 'ReferenceNotFoundError' &&
-				error.name !== 'TransactionNotConfirmedError'
-			) {
-				console.error('[SuperPay] Poll error:', error);
-			}
-			if (statusElement && !paymentComplete) {
-				statusElement.textContent = 'Waiting for payment...';
-			}
-		}
-	}, 3000);
+// 				// Keep the modal open for 5 seconds to allow clicking the explorer link
+// 				setTimeout(() => {
+// 					document.getElementById('superpage-backdrop')?.remove();
+// 					popupElement.remove();
+// 				}, 5000);
+// 			}
+// 		} catch (error: any) {
+// 			if (
+// 				error.name !== 'ReferenceNotFoundError' &&
+// 				error.name !== 'TransactionNotConfirmedError'
+// 			) {
+// 				console.error('[SuperPay] Poll error:', error);
+// 			}
+// 			if (statusElement && !paymentComplete) {
+// 				statusElement.textContent = 'Waiting for payment...';
+// 			}
+// 		}
+// 	}, 3000);
 
-	// Set timeout for payment window
-	setTimeout(() => {
-		if (!paymentComplete) {
-			clearInterval(interval);
-			if (statusElement) {
-				statusElement.style.animation = 'none';
-				statusElement.style.color = '#F97316';
-				statusElement.textContent = 'Payment window expired. Try again.';
-			}
-		}
-	}, 5 * 60 * 1000); // 5 minutes timeout
-}
+// 	// Set timeout for payment window
+// 	setTimeout(() => {
+// 		if (!paymentComplete) {
+// 			clearInterval(interval);
+// 			if (statusElement) {
+// 				statusElement.style.animation = 'none';
+// 				statusElement.style.color = '#F97316';
+// 				statusElement.textContent = 'Payment window expired. Try again.';
+// 			}
+// 		}
+// 	}, 5 * 60 * 1000); // 5 minutes timeout
+// }
 
 // Toast notification function with fixed animation
 function showToast(
@@ -752,9 +752,10 @@ function showToast(
 	toast.style.zIndex = '10000';
 	toast.style.display = 'flex';
 	toast.style.alignItems = 'center';
-	toast.style.padding = '0.75rem 1rem';
-	toast.style.borderRadius = '0.5rem';
+	toast.style.padding = '12px 16px';
+	toast.style.borderRadius = '8px';
 	toast.style.color = 'white';
+	toast.style.fontSize = '16px';
 	toast.style.boxShadow =
 		'0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
 	toast.style.opacity = '0';
