@@ -1,14 +1,3 @@
-export interface RecipientUser {
-	_id: string;
-	walletAddress: string;
-	// add any other user-specific fields here
-}
-
-export interface GetRecipientResponse {
-	user?: RecipientUser;
-	error?: string;
-}
-
 /**
  * Fetch recipient address from background script via messaging.
  * @param username - the username to look up
@@ -18,7 +7,7 @@ export interface GetRecipientResponse {
 export default function getRecipientAddress(
 	username: string,
 	platform: string
-): Promise<{ data: { user: RecipientUser } }> {
+) {
 	return new Promise((resolve, reject) => {
 		try {
 			chrome.runtime.sendMessage(
@@ -27,7 +16,7 @@ export default function getRecipientAddress(
 					username,
 					platform,
 				},
-				(response: GetRecipientResponse) => {
+				(response) => {
 					if (chrome.runtime.lastError) {
 						return reject(new Error(chrome.runtime.lastError.message));
 					}
@@ -37,10 +26,7 @@ export default function getRecipientAddress(
 					if (response.error) {
 						return reject(new Error(response.error));
 					}
-					if (!response.user) {
-						return reject(new Error('User not found'));
-					}
-					resolve({ data: { user: response.user } });
+					resolve(response.data);
 				}
 			);
 		} catch (err) {

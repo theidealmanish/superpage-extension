@@ -23,7 +23,6 @@ export const createPopup = async (username: string, platform: string) => {
 	console.log(`[SuperPay] Opening tip modal for ${username}`);
 
 	let recipient;
-	let user;
 	console.log('Fetching recipient address for', username, platform);
 	try {
 		const data: any = await getRecipientAddress(username, platform);
@@ -193,11 +192,11 @@ export const createPopup = async (username: string, platform: string) => {
         <div class="form-group">
             <label for="superpage-network">Network</label>
             <select id="superpage-network">
-                <option value="solana" selected>
+				<option value="sui" selected>
+					SUI Network (SUI)
+				</option>
+                <option value="solana">
                     Solana (SOL)
-                </option>
-                <option value="sui">
-                    SUI Network (SUI)
                 </option>
                 <option value="stellar">
                     Stellar (XLM)
@@ -257,7 +256,7 @@ export const createPopup = async (username: string, platform: string) => {
 	const extensionButton = document.getElementById('superpage-use-extension');
 
 	// Initialize based on default selection
-	updateInterfaceForNetwork('solana');
+	updateInterfaceForNetwork('sui');
 
 	if (networkSelector) {
 		networkSelector.addEventListener('change', () => {
@@ -290,11 +289,11 @@ export const createPopup = async (username: string, platform: string) => {
 		if (extensionButton) {
 			let walletName = 'Wallet';
 			switch (network) {
-				case 'solana':
-					walletName = 'Phantom';
-					break;
 				case 'sui':
 					walletName = 'Sui Wallet';
+					break;
+				case 'solana':
+					walletName = 'Phantom';
 					break;
 				case 'stellar':
 					walletName = 'Stellar Wallet';
@@ -374,34 +373,34 @@ export const createPopup = async (username: string, platform: string) => {
 								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
 						}
 
-						fetch('http://localhost:8000/transactions', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								to: user!._id,
-								amount: amount,
-								network: selectedNetwork,
-								message: messageText,
-							}),
-						})
-							.then(async (res) => {
-								if (!res.ok) {
-									const errorData = await res.json();
-									throw new Error(errorData.message || 'Request failed');
-								}
-								return res.json();
-							})
-							.then((data) => {
-								console.log('[SuperPay] Transaction recorded:', data);
-							})
-							.catch((error) => {
-								console.error(
-									'[SuperPay] Error submitting transaction:',
-									error.message
-								);
-							});
+						// fetch('http://localhost:8000/transactions', {
+						// 	method: 'POST',
+						// 	headers: {
+						// 		'Content-Type': 'application/json',
+						// 	},
+						// 	body: JSON.stringify({
+						// 		to: user!._id,
+						// 		amount: amount,
+						// 		network: selectedNetwork,
+						// 		message: messageText,
+						// 	}),
+						// })
+						// 	.then(async (res) => {
+						// 		if (!res.ok) {
+						// 			const errorData = await res.json();
+						// 			throw new Error(errorData.message || 'Request failed');
+						// 		}
+						// 		return res.json();
+						// 	})
+						// 	.then((data) => {
+						// 		console.log('[SuperPay] Transaction recorded:', data);
+						// 	})
+						// 	.catch((error) => {
+						// 		console.error(
+						// 			'[SuperPay] Error submitting transaction:',
+						// 			error.message
+						// 		);
+						// 	});
 
 						// Create a success message with explorer link
 						const statusContainer = document.createElement('div');
@@ -457,11 +456,11 @@ export const createPopup = async (username: string, platform: string) => {
 							// Get wallet name based on network
 							let walletName = 'Wallet';
 							switch (selectedNetwork) {
-								case 'solana':
-									walletName = 'Phantom';
-									break;
 								case 'sui':
 									walletName = 'Sui Wallet';
+									break;
+								case 'solana':
+									walletName = 'Phantom';
 									break;
 								case 'stellar':
 									walletName = 'Stellar Wallet';

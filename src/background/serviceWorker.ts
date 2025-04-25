@@ -1,6 +1,3 @@
-// src/background.ts
-import type { RecipientUser } from '@/lib/getReciepientAddress';
-
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 	if (msg.type === 'getRecipientAddress') {
 		const { username, platform } = msg;
@@ -13,15 +10,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 			}
 		)
 			.then(async (res) => {
-				if (res.status === 404) {
-					sendResponse({ error: 'NOT_FOUND' });
-				} else if (!res.ok) {
-					sendResponse({ error: 'FETCH_FAILED', status: res.status });
+				console.log('Response from recipient address fetch:', res);
+				if (res.ok) {
+					const data: any = await res.json();
+					sendResponse({ status: 'success', data: data.data });
 				} else {
-					const payload = (await res.json()) as {
-						data: { user: RecipientUser };
-					};
-					sendResponse({ user: payload.data.user });
+					sendResponse({ error: 'FETCH_FAILED', status: res.status });
 				}
 			})
 			.catch((err) => {

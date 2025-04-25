@@ -7,9 +7,7 @@ import {
 	Wallet,
 } from '@mysten/wallet-standard';
 import { Transaction } from '@mysten/sui/transactions';
-import type { SuiTransactionBlockResponse } from '@mysten/sui/client';
 
-// Define interface for Sui Wallet to fix the 'unknown' type error
 interface SuiWalletWithFeatures extends Wallet {
 	name: string;
 	accounts: WalletAccount[];
@@ -24,6 +22,7 @@ interface SuiWalletWithFeatures extends Wallet {
 
 	// Check for wallet availability
 	const wallets = getWallets().get();
+	console.log(wallets);
 	const suiWallet = wallets.find((w) => w.name === 'Sui Wallet');
 
 	if (!suiWallet) {
@@ -65,14 +64,14 @@ interface SuiWalletWithFeatures extends Wallet {
 				txAny.transferObjects([coin], recipient);
 
 				// Sign and send transaction
-				const result = (await typedWallet.features[
+				const result = await typedWallet.features[
 					'sui:signAndExecuteTransaction'
 					// @ts-ignore
 				].signAndExecuteTransaction({
 					account: senderAccount,
 					chain: 'sui:testnet',
 					transaction: txAny,
-				})) as SuiTransactionBlockResponse;
+				});
 
 				console.log('[SuperPay] Transaction sent:', result.digest);
 
