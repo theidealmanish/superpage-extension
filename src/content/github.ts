@@ -75,13 +75,13 @@ const injectTipButton = async () => {
 			userName = getUsername() || 'this developer';
 		}
 
-		console.log('[SuperPay] Opening tip modal for:', userName);
+		console.log('[SuperPage] Opening tip modal for:', userName);
 		createPopup(userName, 'github');
 	};
 
 	// Place the button next to the reaction menu
 	reactionMenu.parentNode?.insertBefore(button, reactionMenu.nextSibling);
-	console.log('[SuperPay] GitHub tip button injected');
+	console.log('[SuperPage] GitHub tip button injected');
 };
 
 injectTipButton();

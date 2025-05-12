@@ -125,24 +125,26 @@ export function injectWalletBridge(): void {
 	}
 
 	// Inject SUI bridge
-	const suiId = 'sui-bridge-script';
-	if (!document.getElementById(suiId)) {
-		const suiScript = document.createElement('script');
-		suiScript.id = suiId;
-		suiScript.src = chrome.runtime.getURL('suiBridge.js');
-		suiScript.type = 'module';
-		(document.head || document.documentElement).appendChild(suiScript);
-	}
+	// FIXME: We will be using Phantom wallet for SUI bridge
+	// const suiId = 'sui-bridge-script';
+	// if (!document.getElementById(suiId)) {
+	// 	const suiScript = document.createElement('script');
+	// 	suiScript.id = suiId;
+	// 	suiScript.src = chrome.runtime.getURL('suiBridge.js');
+	// 	suiScript.type = 'module';
+	// 	(document.head || document.documentElement).appendChild(suiScript);
+	// }
 
 	// Inject ETH bridge
-	const ethId = 'eth-bridge-script';
-	if (!document.getElementById(ethId)) {
-		const ethScript = document.createElement('script');
-		ethScript.id = ethId;
-		ethScript.src = chrome.runtime.getURL('ethereumBridge.js');
-		ethScript.type = 'module';
-		(document.head || document.documentElement).appendChild(ethScript);
-	}
+	// FIXME: We will be using Phantom wallet for SUI bridge
+	// const ethId = 'eth-bridge-script';
+	// if (!document.getElementById(ethId)) {
+	// 	const ethScript = document.createElement('script');
+	// 	ethScript.id = ethId;
+	// 	ethScript.src = chrome.runtime.getURL('ethereumBridge.js');
+	// 	ethScript.type = 'module';
+	// 	(document.head || document.documentElement).appendChild(ethScript);
+	// }
 }
 
 export function waitForElement(

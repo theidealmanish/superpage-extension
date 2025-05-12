@@ -11,10 +11,10 @@ import { Buffer } from 'buffer';
 window.Buffer = Buffer;
 
 (async () => {
-	console.log('[SuperPay] Phantom wallet bridge loaded');
+	console.log('[SuperPage] Phantom wallet bridge loaded');
 
 	if (!('solana' in window)) {
-		console.warn('[SuperPay] Phantom wallet not found');
+		console.warn('[SuperPage] Phantom wallet not found');
 		return;
 	}
 
@@ -22,10 +22,10 @@ window.Buffer = Buffer;
 		if (event.data?.type === 'SUPERPAGE_TIP_SOLANA') {
 			const recipient = new PublicKey(event.data.recipient);
 			const lamports = event.data.amount * 1_000_000_000;
-			const message = event.data.message || 'SuperPay Tip';
+			const message = event.data.message || 'SuperPage Tip';
 
 			console.log(
-				`[SuperPay] Sending ${lamports} lamports to ${recipient.toBase58()}`
+				`[SuperPage] Sending ${lamports} lamports to ${recipient.toBase58()}`
 			);
 
 			try {
@@ -61,14 +61,14 @@ window.Buffer = Buffer;
 				const signedTx = await provider.signTransaction(transaction);
 				const txid = await connection.sendRawTransaction(signedTx.serialize());
 
-				console.log('[SuperPay] Transaction sent:', txid);
+				console.log('[SuperPage] Transaction sent:', txid);
 
 				window.postMessage(
 					{ type: 'SUPERPAGE_TIP_RESULT', success: true, tx: txid },
 					'*'
 				);
 			} catch (err: any) {
-				console.error('[SuperPay] Tip failed:', err.message);
+				console.error('[SuperPage] Tip failed:', err.message);
 				window.postMessage(
 					{
 						type: 'SUPERPAGE_TIP_RESULT',

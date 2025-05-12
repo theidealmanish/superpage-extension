@@ -67,7 +67,6 @@ async function processEngagementQueue(): Promise<void> {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
 			},
 			body: JSON.stringify(engagement),
 		});
@@ -134,11 +133,3 @@ setInterval(processEngagementQueue, 60000); // Every minute
 
 // Process queue when extension is first loaded
 processEngagementQueue();
-
-chrome.action.onClicked.addListener((tab) => {
-	chrome.sidePanel.setOptions({
-		tabId: tab.id,
-		path: 'index.html',
-		enabled: true,
-	});
-});

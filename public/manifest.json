@@ -5,10 +5,10 @@
 	"version": "1.0.0",
 
 	"icons": {
-		"16": "images/d-page.png",
-		"32": "images/d-page.png",
-		"48": "images/d-page.png",
-		"128": "images/d-page.png"
+		"16": "images/super.png",
+		"32": "images/super.png",
+		"48": "images/super.png",
+		"128": "images/super.png"
 	},
 	"declarative_net_request": {
 		"rule_resources": [
@@ -19,13 +19,24 @@
 			}
 		]
 	},
+	"side_panel": {
+		"default_path": "index.html",
+		"open_panel_action": {
+			"default_icon": {
+				"16": "images/super.png",
+				"32": "images/super.png",
+				"48": "images/super.png",
+				"128": "images/super.png"
+			}
+		}
+	},
 	"action": {
-		"default_popup": "popup.html",
+		"default_popup": "index.html",
 		"default_icon": {
-			"16": "images/d-page.png",
-			"32": "images/d-page.png",
-			"48": "images/d-page.png",
-			"128": "images/d-page.png"
+			"16": "images/super.png",
+			"32": "images/super.png",
+			"48": "images/super.png",
+			"128": "images/super.png"
 		}
 	},
 
@@ -34,13 +45,17 @@
 		"tabs",
 		"activeTab",
 		"scripting",
-		"declarativeNetRequest"
+		"declarativeNetRequest",
+		"sidePanel"
 	],
 
 	"host_permissions": [
 		"https://www.youtube.com/*",
+		"https://youtube.com/*",
 		"https://github.com/*",
+		"https://www.github.com/*",
 		"https://x.com/*",
+		"https://www.x.com/*",
 		"https://superpa.ge/*",
 		"https://www.superpa.ge/*"
 	],

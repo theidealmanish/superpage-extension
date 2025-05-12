@@ -80,7 +80,7 @@ const injectTipButton = async () => {
 	// Find the tweet container
 	const tweetContainer = document.querySelector('article');
 	if (!tweetContainer) {
-		console.log('[SuperPay] Tweet article not found');
+		console.log('[SuperPage] Tweet article not found');
 		return;
 	}
 
@@ -92,7 +92,7 @@ const injectTipButton = async () => {
 	// Find the action bar
 	const actionBar = tweetContainer.querySelector('[role="group"]');
 	if (!actionBar) {
-		console.log('[SuperPay] Action bar not found');
+		console.log('[SuperPage] Action bar not found');
 		return;
 	}
 
@@ -101,7 +101,7 @@ const injectTipButton = async () => {
 		'button[aria-label="Grok actions"]'
 	);
 	if (!grokButton) {
-		console.log('[SuperPay] Grok button not found');
+		console.log('[SuperPage] Grok button not found');
 		return;
 	}
 
@@ -110,7 +110,7 @@ const injectTipButton = async () => {
 		'.css-175oi2r.r-1awozwy.r-18u37iz.r-1cmwbt1.r-1wtj0ep'
 	);
 	if (!buttonRowContainer) {
-		console.log('[SuperPay] Button row container not found');
+		console.log('[SuperPage] Button row container not found');
 		return;
 	}
 
@@ -173,7 +173,7 @@ const injectTipButton = async () => {
 		// Default if we couldn't find it
 		username = username || 'this creator';
 
-		console.log('[SuperPay] Opening tip modal for:', username);
+		console.log('[SuperPage] Opening tip modal for:', username);
 		createPopup(username, 'x');
 	};
 
@@ -204,21 +204,21 @@ const injectTipButton = async () => {
 		}
 	}
 
-	console.log('[SuperPay] Tip button injected into X.com successfully');
+	console.log('[SuperPage] Tip button injected into X.com successfully');
 };
 
 // Function to handle tweets in timeline
 const processTweetTimeline = () => {
 	// Find all tweet articles in the timeline
 	const tweets = document.querySelectorAll('article');
-	console.log('[SuperPay] Processing timeline tweets:', tweets.length);
+	console.log('[SuperPage] Processing timeline tweets:', tweets.length);
 	tweets.forEach((tweet) => {
 		// Skip if this tweet already has our button
 		if (tweet.querySelector('.superpage-timeline-btn')) return;
 
 		// Look for Grok button in this tweet
 		const grokButton = tweet.querySelector('button[aria-label="Grok actions"]');
-		console.log('[SuperPay] Grok button found:', grokButton);
+		console.log('[SuperPage] Grok button found:', grokButton);
 		if (!grokButton) return;
 
 		// Get the parent container for Grok button
@@ -261,7 +261,7 @@ const processTweetTimeline = () => {
 			}
 
 			username = username || 'this creator';
-			console.log('[SuperPay] Opening tip modal from timeline for:', username);
+			console.log('[SuperPage] Opening tip modal from timeline for:', username);
 			createPopup(username, 'x');
 		};
 

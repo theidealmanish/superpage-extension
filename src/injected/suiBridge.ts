@@ -18,7 +18,7 @@ interface SuiWalletWithFeatures extends Wallet {
 }
 
 (async () => {
-	console.log('[SuperPay] Sui wallet bridge loaded');
+	console.log('[SuperPage] Sui wallet bridge loaded');
 
 	// Check for wallet availability
 	const wallets = getWallets().get();
@@ -26,7 +26,7 @@ interface SuiWalletWithFeatures extends Wallet {
 	const suiWallet = wallets.find((w) => w.name === 'Sui Wallet');
 
 	if (!suiWallet) {
-		console.warn('[SuperPay] Sui Wallet not found');
+		console.warn('[SuperPage] Sui Wallet not found');
 		return;
 	}
 
@@ -35,9 +35,9 @@ interface SuiWalletWithFeatures extends Wallet {
 			const recipient = event.data.recipient;
 			const amount = parseFloat(event.data.amount);
 			const mist = Math.floor(amount * 1_000_000_000);
-			const message = event.data.message || 'SuperPay Tip';
+			const message = event.data.message || 'SuperPage Tip';
 
-			console.log(`[SuperPay] Sending ${mist} mist to ${recipient}`);
+			console.log(`[SuperPage] Sending ${mist} mist to ${recipient}`);
 
 			try {
 				const typedWallet = suiWallet as SuiWalletWithFeatures;
@@ -57,7 +57,7 @@ interface SuiWalletWithFeatures extends Wallet {
 				// Add message if supported
 				// Note: This would need to be implemented based on SUI's memo capability
 				// For now we're just logging it
-				console.log(`[SuperPay] Message: ${message}`);
+				console.log(`[SuperPage] Message: ${message}`);
 
 				// Setup the transfer
 				const [coin] = txAny.splitCoins(txAny.gas, [mist]);
@@ -73,7 +73,7 @@ interface SuiWalletWithFeatures extends Wallet {
 					transaction: txAny,
 				});
 
-				console.log('[SuperPay] Transaction sent:', result.digest);
+				console.log('[SuperPage] Transaction sent:', result.digest);
 
 				// Notify the application about successful transaction
 				window.postMessage(
@@ -81,7 +81,7 @@ interface SuiWalletWithFeatures extends Wallet {
 					'*'
 				);
 			} catch (err: any) {
-				console.error('[SuperPay] SUI Tip failed:', err.message);
+				console.error('[SuperPage] SUI Tip failed:', err.message);
 				window.postMessage(
 					{
 						type: 'SUPERPAGE_TIP_RESULT',

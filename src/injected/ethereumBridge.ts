@@ -25,11 +25,11 @@ interface NetworkConfig {
 }
 
 (async () => {
-	console.log('[SuperPay] Pharos wallet bridge loaded');
+	console.log('[SuperPage] Pharos wallet bridge loaded');
 
 	const ethereum = window.ethereum;
 	if (!ethereum) {
-		console.warn('[SuperPay] MetaMask not found');
+		console.warn('[SuperPage] MetaMask not found');
 		return;
 	}
 
@@ -40,7 +40,7 @@ interface NetworkConfig {
 		const ethAmount = amount.toString(); // ETH as string
 
 		console.log(
-			`[SuperPay] Sending ${ethAmount} ETH to ${recipient} on Pharos Network`
+			`[SuperPage] Sending ${ethAmount} ETH to ${recipient} on Pharos Network`
 		);
 
 		try {
@@ -104,7 +104,7 @@ interface NetworkConfig {
 				params: [txParams],
 			});
 
-			console.log(`[SuperPay] Pharos transaction sent:`, txHash);
+			console.log(`[SuperPage] Pharos transaction sent:`, txHash);
 
 			// Get the explorer URL
 			const explorerBaseUrl = pharosNetwork.blockExplorerUrls[0] || '';
@@ -125,7 +125,7 @@ interface NetworkConfig {
 				'*'
 			);
 		} catch (err: any) {
-			console.error(`[SuperPay] Pharos Tip failed:`, err);
+			console.error(`[SuperPage] Pharos Tip failed:`, err);
 			window.postMessage(
 				{
 					type: 'SUPERPAGE_TIP_RESULT',

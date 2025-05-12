@@ -1,20 +1,23 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-
-const resolvePath = (p: string) => path.resolve(__dirname, p);
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), tailwindcss()],
+	resolve: {
+		alias: {
+			'@': path.resolve(__dirname, 'src'),
+		},
+	},
 	build: {
-		target: 'esnext',
-		outDir: 'dist',
-		emptyOutDir: true,
 		rollupOptions: {
 			input: {
-				popup: resolvePath('public/popup.html'),
+				popup: path.resolve(__dirname, 'index.html'), // the popup
 			},
 		},
-		// For popup HTML build only
+		outDir: 'dist',
+		emptyOutDir: true,
 	},
 });
