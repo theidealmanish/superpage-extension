@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
 	Card,
 	CardContent,
@@ -12,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { authApi } from '@/lib/api';
 
 interface LoginPageProps {
 	onLogin: (user: any, token: string) => void;
@@ -21,6 +23,7 @@ interface LoginPageProps {
 export default function LoginPage({ onLogin, isExtension }: LoginPageProps) {
 	const [identifier, setIdentifier] = useState('');
 	const [password, setPassword] = useState('');
+	const [rememberMe, setRememberMe] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async (e: React.FormEvent) => {
@@ -28,28 +31,14 @@ export default function LoginPage({ onLogin, isExtension }: LoginPageProps) {
 		setIsLoading(true);
 
 		try {
-			const response = await fetch('http://localhost:8000/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					identifier,
-					password,
-				}),
-			});
+			const result = await authApi.login(identifier, password);
 
-			const data = await response.json();
-
-			if (response.ok) {
+			if (result.success) {
 				toast.success('Logged in successfully!');
-				onLogin(data.user, data.token);
+				onLogin(result.user, result.token);
 			} else {
-				toast.error(data.message || 'Invalid credentials');
+				toast.error(result.error || 'Invalid credentials');
 			}
-		} catch (error) {
-			console.error('Login error:', error);
-			toast.error('Connection error. Please try again.');
 		} finally {
 			setIsLoading(false);
 		}
@@ -71,7 +60,7 @@ export default function LoginPage({ onLogin, isExtension }: LoginPageProps) {
 				<div className='text-center mb-5'>
 					<h1 className='text-xl font-semibold text-primary'>SuperPage</h1>
 					<p className='text-muted-foreground text-sm'>
-						Incentivize your engagement
+						Creator monetization for everyone
 					</p>
 				</div>
 
@@ -131,6 +120,20 @@ export default function LoginPage({ onLogin, isExtension }: LoginPageProps) {
 									autoComplete='current-password'
 									className='h-9'
 								/>
+							</div>
+
+							<div className='flex items-center space-x-2'>
+								<Checkbox
+									id='remember'
+									checked={rememberMe}
+									onCheckedChange={(checked) => setRememberMe(checked === true)}
+								/>
+								<Label
+									htmlFor='remember'
+									className='text-xs font-normal text-muted-foreground'
+								>
+									Remember me for 30 days
+								</Label>
 							</div>
 
 							<Button type='submit' className='w-full h-9' disabled={isLoading}>

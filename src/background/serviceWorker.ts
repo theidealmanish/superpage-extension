@@ -1,16 +1,53 @@
-// Background script to handle engagement reporting and other background tasks
+import { storageService } from '@/lib/api';
 
 // Store pending engagements in memory
 let pendingEngagements: any[] = [];
 const API_URL = 'http://localhost:8000';
 
+const GOOGLE_ORIGIN = 'https://www.google.com';
+
+chrome.tabs.onUpdated.addListener(async (tabId, _info, tab) => {
+	if (!tab.url) return;
+	const url = new URL(tab.url);
+	// Enables the side panel on google.com
+	if (url.origin === GOOGLE_ORIGIN) {
+		await chrome.sidePanel.setOptions({
+			tabId,
+			path: 'sidepanel.html',
+			enabled: true,
+		});
+	} else {
+		// Disables the side panel on all other sites
+		await chrome.sidePanel.setOptions({
+			tabId,
+			enabled: false,
+		});
+	}
+});
+
 // Process message from content script
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 	console.log('[SuperPage Background] Received message:', message.type);
+
+	// open side panel
+	if (message.type === 'OPEN_SIDEPANEL') {
+		chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+			if (tabs.length === 0 || !tabs[0].id) return;
+
+			chrome.sidePanel.setOptions({
+				tabId: tabs[0].id,
+				path: 'index.html',
+				enabled: true,
+			});
+
+			chrome.sidePanel.open({ tabId: tabs[0].id! });
+		});
+	}
+
+	// Report engagement
 	if (message.type === 'reportEngagement') {
 		console.log('[SuperPage Background] Reporting engagement:', message.data);
-	}
-	if (message.type === 'reportEngagement') {
+
 		// Add engagement to queue
 		pendingEngagements.push(message.data);
 
@@ -27,10 +64,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 				sendResponse({ success: false, error: error.message });
 			});
 
-		// Return true to indicate we'll send a response asynchronously
 		return true;
 	}
 
+	// Get recipient address
 	if (message.type === 'getRecipientAddress') {
 		// Handle recipient address lookup
 		fetchRecipientAddress(message.username, message.platform)
@@ -45,7 +82,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 				sendResponse({ success: false, error: error.message });
 			});
 
-		// Return true to indicate we'll send a response asynchronously
 		return true;
 	}
 });
@@ -67,7 +103,7 @@ async function processEngagementQueue(): Promise<void> {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
+				Authorization: `Bearer ${await storageService.getToken()}`,
 			},
 			body: JSON.stringify(engagement),
 		});

@@ -6,6 +6,7 @@ import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoadingPage from './pages/LoadingPage';
+import { authApi } from './lib/api';
 
 type AppProps = {
 	context?: 'popup' | 'sidepanel';
@@ -30,43 +31,24 @@ function App({ context = 'popup' }: AppProps) {
 			document.body.classList.add(`context-${context}`);
 		}
 
-		// Check if user is already logged in by checking local storage
-		const token = localStorage.getItem('token');
-		if (token) {
-			console.log('Token found:', token);
-			validateToken(token);
-			return;
-		} else {
-			setIsLoading(false);
-			setCurrentPage('login');
-		}
+		// Check if user is already logged in by validating stored token
+		checkAuthStatus();
 	}, [context]);
 
-	// Validate saved token
-	const validateToken = async (token: string) => {
-		try {
-			setIsLoading(true);
-			const response = await fetch('http://localhost:8000/auth/current-user', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-			});
+	const checkAuthStatus = async () => {
+		setIsLoading(true);
 
-			if (response.ok) {
-				const data = await response.json();
-				console.log('User data:', data);
-				setUserData(data.user);
+		try {
+			const result = await authApi.validateToken();
+
+			if (result.success) {
+				setUserData(result.user);
 				setCurrentPage('dashboard');
 			} else {
-				// If token is invalid, remove it and show login
-				localStorage.removeItem('token');
 				setCurrentPage('login');
 			}
 		} catch (error) {
-			console.error('Error validating token:', error);
-			localStorage.removeItem('token');
+			console.error('Auth check error:', error);
 			setCurrentPage('login');
 		} finally {
 			setIsLoading(false);
@@ -77,14 +59,13 @@ function App({ context = 'popup' }: AppProps) {
 		setCurrentPage(page);
 	};
 
-	const handleLogin = (user: any, token: string) => {
-		localStorage.setItem('token', token);
+	const handleLogin = (user: any, _token: string) => {
 		setUserData(user);
 		setCurrentPage('dashboard');
 	};
 
-	const handleLogout = () => {
-		localStorage.removeItem('token');
+	const handleLogout = async () => {
+		await authApi.logout();
 		setUserData(null);
 		setCurrentPage('login');
 	};
@@ -97,7 +78,9 @@ function App({ context = 'popup' }: AppProps) {
 	// Render the appropriate page based on current state
 	return (
 		<main
-			className={`min-h-screen bg-background ${isExtension ? 'extension' : ''}`}
+			className={`min-h-screen min-w-screen bg-background ${
+				isExtension ? 'extension' : ''
+			}`}
 		>
 			{currentPage === 'login' && (
 				<LoginPage onLogin={handleLogin} isExtension={isExtension} />

@@ -67,10 +67,19 @@ export default function DashboardPage({
 			<header className='flex justify-between items-center mb-6'>
 				<div className='flex items-center gap-2'>
 					<Avatar className='h-10 w-10'>
-						<AvatarImage src={user.avatar} alt={user.name || user.username} />
-						<AvatarFallback className='bg-primary text-primary-foreground'>
-							{getInitials(user.name || user.username)}
-						</AvatarFallback>
+						{
+							// Fallback to initials if avatar URL is not available
+							user.photo ? (
+								<AvatarImage
+									src={user.photo}
+									alt={user.name || user.username}
+								/>
+							) : (
+								<AvatarFallback className='bg-primary text-primary-foreground'>
+									{getInitials(user.name || user.username)}
+								</AvatarFallback>
+							)
+						}
 					</Avatar>
 					<div>
 						<h1 className='text-lg font-semibold'>
@@ -82,6 +91,23 @@ export default function DashboardPage({
 					</div>
 				</div>
 
+				<Button
+					variant='ghost'
+					size='icon'
+					onClick={async () => {
+						if (isExtension) {
+							chrome.runtime.sendMessage({
+								type: 'OPEN_SIDEPANEL',
+							});
+							window.close();
+						} else {
+							console.log('Sidebar is not available');
+						}
+					}}
+					title='Open Sidebar'
+				>
+					<Settings className='h-5 w-5' />
+				</Button>
 				<Button variant='ghost' size='icon' onClick={onLogout}>
 					<LogOut className='h-5 w-5' />
 				</Button>
@@ -122,13 +148,10 @@ export default function DashboardPage({
 									onClick={() => {
 										if (isExtension) {
 											chrome.tabs.create({
-												url: 'https://superpage.com/dashboard/wallet',
+												url: 'https://superpa.ge/home',
 											});
 										} else {
-											window.open(
-												'https://superpage.com/dashboard/wallet',
-												'_blank'
-											);
+											window.open('https://superpa.ge/home', '_blank');
 										}
 									}}
 								>
@@ -211,10 +234,10 @@ export default function DashboardPage({
 								onClick={() => {
 									if (isExtension) {
 										chrome.tabs.create({
-											url: 'https://superpage.com/dashboard',
+											url: 'https://superpa.ge/home',
 										});
 									} else {
-										window.open('https://superpage.com/dashboard', '_blank');
+										window.open('https://superpa.ge/home', '_blank');
 									}
 								}}
 							>
@@ -293,13 +316,10 @@ export default function DashboardPage({
 								onClick={() => {
 									if (isExtension) {
 										chrome.tabs.create({
-											url: 'https://superpage.com/dashboard/earnings',
+											url: 'https://superpa.ge/loyalties',
 										});
 									} else {
-										window.open(
-											'https://superpage.com/dashboard/earnings',
-											'_blank'
-										);
+										window.open('https://superpa.ge/loyalties', '_blank');
 									}
 								}}
 							>
@@ -366,13 +386,10 @@ export default function DashboardPage({
 									onClick={() => {
 										if (isExtension) {
 											chrome.tabs.create({
-												url: 'https://superpage.com/dashboard/analytics',
+												url: 'https://superpa.ge/loyalties',
 											});
 										} else {
-											window.open(
-												'https://superpage.com/dashboard/analytics',
-												'_blank'
-											);
+											window.open('https://superpa.ge/loyalties', '_blank');
 										}
 									}}
 								>
@@ -438,13 +455,10 @@ export default function DashboardPage({
 									onClick={() => {
 										if (isExtension) {
 											chrome.tabs.create({
-												url: 'https://superpage.com/dashboard/supporters',
+												url: 'https://superpa.ge/notifications',
 											});
 										} else {
-											window.open(
-												'https://superpage.com/dashboard/supporters',
-												'_blank'
-											);
+											window.open('https://superpa.ge/notifications', '_blank');
 										}
 									}}
 								>
