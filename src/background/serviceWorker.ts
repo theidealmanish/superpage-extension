@@ -30,6 +30,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		// Add engagement to queue
 		pendingEngagements.push(message.data);
+		console.log(
+			`[SuperPage Background] Added engagement to queue. Total: ${pendingEngagements.length}`
+		);
 
 		// Process immediately
 		processEngagementQueue()
@@ -64,6 +67,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		return true;
 	}
+	return true;
 });
 
 // Process engagement queue
@@ -87,6 +91,10 @@ async function processEngagementQueue(): Promise<void> {
 			},
 			body: JSON.stringify(engagement),
 		});
+		console.log(
+			'[SuperPage Background] Engagement request response:',
+			response
+		);
 
 		if (response.ok) {
 			console.log('[SuperPage Background] Engagement reported successfully');

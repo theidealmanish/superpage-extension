@@ -1,5 +1,5 @@
 // TODO: Use this as environment variable
-const apiBaseUrl = 'https://api.superpa.ge';
+const apiBaseUrl = 'http://localhost:8000';
 
 // Storage service for handling tokens
 export const storageService = {
