@@ -4,29 +4,9 @@ import { storageService } from '@/lib/api';
 let pendingEngagements: any[] = [];
 const API_URL = 'http://localhost:8000';
 
-const GOOGLE_ORIGIN = 'https://www.google.com';
-
-chrome.tabs.onUpdated.addListener(async (tabId, _info, tab) => {
-	if (!tab.url) return;
-	const url = new URL(tab.url);
-	// Enables the side panel on google.com
-	if (url.origin === GOOGLE_ORIGIN) {
-		await chrome.sidePanel.setOptions({
-			tabId,
-			path: 'sidepanel.html',
-			enabled: true,
-		});
-	} else {
-		// Disables the side panel on all other sites
-		await chrome.sidePanel.setOptions({
-			tabId,
-			enabled: false,
-		});
-	}
-});
-
 // Process message from content script
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+	// Log the message type
 	console.log('[SuperPage Background] Received message:', message.type);
 
 	// open side panel
@@ -148,7 +128,13 @@ async function fetchRecipientAddress(
 	platform: string
 ): Promise<any> {
 	try {
-		const response = await fetch(`${API_URL}/users/${platform}/${username}`);
+		const response = await fetch(`${API_URL}/profile/find/${username}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ platform }),
+		});
 
 		if (!response.ok) {
 			throw new Error(`Failed to fetch recipient: ${response.status}`);

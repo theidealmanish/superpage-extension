@@ -1,20 +1,5 @@
 // TODO: Use this as environment variable
-const isDev = true;
-
-// Environment configuration
-const config = {
-	development: {
-		baseUrl: 'http://localhost:8000',
-	},
-	production: {
-		baseUrl: 'https://api.superpa.ge',
-	},
-};
-
-// Determine current environment
-export const apiBaseUrl = isDev
-	? config.development.baseUrl
-	: config.production.baseUrl;
+const apiBaseUrl = 'https://api.superpa.ge';
 
 // Storage service for handling tokens
 export const storageService = {

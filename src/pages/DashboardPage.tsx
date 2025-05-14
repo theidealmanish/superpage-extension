@@ -15,6 +15,7 @@ import {
 	Activity,
 	Users,
 	Wallet,
+	Sidebar,
 	Settings,
 	LogOut,
 	ChevronRight,
@@ -90,40 +91,53 @@ export default function DashboardPage({
 						</p>
 					</div>
 				</div>
-
-				<Button
-					variant='ghost'
-					size='icon'
-					onClick={async () => {
-						if (isExtension) {
-							chrome.runtime.sendMessage({
-								type: 'OPEN_SIDEPANEL',
-							});
-							window.close();
-						} else {
-							console.log('Sidebar is not available');
-						}
-					}}
-					title='Open Sidebar'
-				>
-					<Settings className='h-5 w-5' />
-				</Button>
-				<Button variant='ghost' size='icon' onClick={onLogout}>
-					<LogOut className='h-5 w-5' />
-				</Button>
+				<div>
+					<Button
+						variant='ghost'
+						size='icon'
+						onClick={async () => {
+							if (isExtension) {
+								chrome.runtime.sendMessage({
+									type: 'OPEN_SIDEPANEL',
+								});
+								window.close();
+							} else {
+								console.log('Sidebar is not available');
+							}
+						}}
+						title='Open Sidebar'
+					>
+						<Sidebar className='h-5 w-5' />
+					</Button>
+					<Button variant='ghost' size='icon' onClick={onLogout}>
+						<LogOut className='h-5 w-5' />
+					</Button>
+				</div>
 			</header>
 
 			<Tabs
 				defaultValue={activeTab}
 				onValueChange={setActiveTab}
-				className='space-y-4'
+				className='space-y-2'
 			>
-				<TabsList className='grid grid-cols-2 md:grid-cols-4'>
-					<TabsTrigger value='overview'>Overview</TabsTrigger>
-					<TabsTrigger value='earnings'>Earnings</TabsTrigger>
-					<TabsTrigger value='engagement'>Engagement</TabsTrigger>
-					<TabsTrigger value='tips'>Tips</TabsTrigger>
-				</TabsList>
+				<div className='overflow-x-auto scrollbar-hide'>
+					<TabsList
+						className={`inline-flex w-full ${isExtension ? 'min-w-full' : ''}`}
+					>
+						<TabsTrigger value='overview' className='flex-1 min-w-[80px]'>
+							Overview
+						</TabsTrigger>
+						<TabsTrigger value='earnings' className='flex-1 min-w-[80px]'>
+							Earnings
+						</TabsTrigger>
+						<TabsTrigger value='engagement' className='flex-1 min-w-[80px]'>
+							Engagement
+						</TabsTrigger>
+						<TabsTrigger value='tips' className='flex-1 min-w-[80px]'>
+							Tips
+						</TabsTrigger>
+					</TabsList>
+				</div>
 
 				<TabsContent value='overview' className='space-y-4'>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

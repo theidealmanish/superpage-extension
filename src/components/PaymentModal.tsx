@@ -26,8 +26,8 @@ export const createPopup = async (username: string, platform: string) => {
 	console.log('Fetching recipient address for', username, platform);
 	try {
 		const data: any = await getRecipientAddress(username, platform);
-		console.log('Recipient data:', data.wallets);
-		recipient = data.wallets['solana'];
+		console.log('Recipient data:', data.data.wallets);
+		recipient = data.data.wallets.solana;
 		console.log('Recipient wallet:', recipient);
 	} catch (error) {
 		console.error('Error fetching recipient address:', error);
@@ -198,9 +198,6 @@ export const createPopup = async (username: string, platform: string) => {
 				<option value="sui">
 					SUI Network (SUI)
 				</option>
-                // <option value="stellar">
-                //     Stellar (XLM)
-                // </option>
                 <option value="ethereum">
                     Pharos (ETH)
                 </option>

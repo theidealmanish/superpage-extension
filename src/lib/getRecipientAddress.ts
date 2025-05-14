@@ -17,6 +17,7 @@ export default function getRecipientAddress(
 					platform,
 				},
 				(response) => {
+					console.log('response', response.data);
 					if (chrome.runtime.lastError) {
 						return reject(new Error(chrome.runtime.lastError.message));
 					}
