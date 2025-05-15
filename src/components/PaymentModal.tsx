@@ -15,6 +15,10 @@ if (typeof window !== 'undefined') {
 	window.Buffer = Buffer;
 }
 
+let user: any;
+let messageText: string | undefined;
+let selectedNetwork: string = 'solana';
+
 // Solana connection for devnet or mainnet
 const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 
@@ -26,6 +30,8 @@ export const createPopup = async (username: string, platform: string) => {
 	console.log('Fetching recipient address for', username, platform);
 	try {
 		const data: any = await getRecipientAddress(username, platform);
+		user = data.data.user;
+		console.log('User data:', user);
 		console.log('Recipient data:', data.data.wallets);
 		recipient = data.data.wallets.solana;
 		console.log('Recipient wallet:', recipient);
@@ -318,12 +324,12 @@ export const createPopup = async (username: string, platform: string) => {
 			}
 
 			// Get the user's message
-			const messageText = (
+			messageText = (
 				document.getElementById('superpage-message') as HTMLTextAreaElement
 			).value.trim();
 
 			// Get selected network
-			const selectedNetwork = (
+			selectedNetwork = (
 				document.getElementById('superpage-network') as HTMLSelectElement
 			).value;
 
@@ -371,34 +377,34 @@ export const createPopup = async (username: string, platform: string) => {
 								explorerUrl = `https://solscan.io/tx/${txid}?cluster=devnet`;
 						}
 
-						// fetch('http://localhost:8000/transactions', {
-						// 	method: 'POST',
-						// 	headers: {
-						// 		'Content-Type': 'application/json',
-						// 	},
-						// 	body: JSON.stringify({
-						// 		to: user!._id,
-						// 		amount: amount,
-						// 		network: selectedNetwork,
-						// 		message: messageText,
-						// 	}),
-						// })
-						// 	.then(async (res) => {
-						// 		if (!res.ok) {
-						// 			const errorData = await res.json();
-						// 			throw new Error(errorData.message || 'Request failed');
-						// 		}
-						// 		return res.json();
-						// 	})
-						// 	.then((data) => {
-						// 		console.log('[SuperPage] Transaction recorded:', data);
-						// 	})
-						// 	.catch((error) => {
-						// 		console.error(
-						// 			'[SuperPage] Error submitting transaction:',
-						// 			error.message
-						// 		);
-						// 	});
+						// TODO: record the transaction in the database
+						// Use the background script to record the transaction
+						chrome.runtime.sendMessage(
+							{
+								type: 'recordTransaction',
+								data: {
+									to: user!._id,
+									amount: amount,
+									transactionHash: txid,
+									network: selectedNetwork,
+									message: messageText,
+									sourceUrl: window.location.href,
+								},
+							},
+							(response) => {
+								if (response.success) {
+									console.log(
+										'[SuperPage] Transaction recorded:',
+										response.data
+									);
+								} else {
+									console.error(
+										'[SuperPage] Error recording transaction:',
+										response.error
+									);
+								}
+							}
+						);
 
 						// Create a success message with explorer link
 						const statusContainer = document.createElement('div');
@@ -526,14 +532,15 @@ export const createPopup = async (username: string, platform: string) => {
 				// First get the recipient address data
 				let recipientPubkey;
 				try {
-					const data = await getRecipientAddress(username, platform);
-					console.log('Recipient data:', data);
+					const data: any = await getRecipientAddress(username, platform);
+					console.log('Recipient data:', data.data);
 					// @ts-ignore
-					if (!data?.wallets?.solana) {
+					if (!data.data?.wallets?.solana) {
 						throw new Error('No wallet address found');
 					}
 					// @ts-ignore
-					recipientPubkey = new PublicKey(data.wallets.solana);
+					// TODO: may need dynamic wallet selection
+					recipientPubkey = new PublicKey(data.data.wallets.solana);
 				} catch (error) {
 					console.error('Error fetching recipient address:', error);
 					showToast('This user is not registered on SuperPage.', 'error');
@@ -579,36 +586,8 @@ export const createPopup = async (username: string, platform: string) => {
 					amount,
 					popup,
 					selectedNetwork
-				).then(() => {
-					// record the transaction in the database
-					// fetch('http://localhost:8000/api/transactions', {
-					// 	method: 'POST',
-					// 	headers: {
-					// 		'Content-Type': 'application/json',
-					// 	},
-					// 	body: JSON.stringify({
-					// 		to: user!._id,
-					// 		amount: amount,
-					// 		message: messageText,
-					// 		network: selectedNetwork,
-					// 	}),
-					// })
-					// 	.then(async (res) => {
-					// 		if (!res.ok) {
-					// 			const errorData = await res.json();
-					// 			throw new Error(errorData.message || 'Request failed');
-					// 		}
-					// 		return res.json();
-					// 	})
-					// 	.then((data) => {
-					// 		console.log('[SuperPage] Transaction recorded:', data);
-					// 	})
-					// 	.catch((error) => {
-					// 		console.error(
-					// 			'[SuperPage] Error submitting transaction:',
-					// 			error.message
-					// 		);
-					// 	});
+				).then((res) => {
+					console.log(res);
 					console.log('[SuperPage] Transaction recorded');
 				});
 			} catch (error) {
@@ -646,8 +625,35 @@ async function pollForTransaction(
 					reference,
 				});
 
+				// Replace your existing fetch with this code in the pollForTransaction function
+
 				paymentComplete = true;
 				clearInterval(interval);
+
+				// Use the background script to record the transaction
+				chrome.runtime.sendMessage(
+					{
+						type: 'recordTransaction',
+						data: {
+							to: user!._id,
+							amount: amount,
+							transactionHash: signatureInfo.signature,
+							network: selectedNetwork,
+							message: messageText,
+							sourceUrl: window.location.href,
+						},
+					},
+					(response) => {
+						if (response.success) {
+							console.log('[SuperPage] Transaction recorded:', response.data);
+						} else {
+							console.error(
+								'[SuperPage] Error recording transaction:',
+								response.error
+							);
+						}
+					}
+				);
 
 				if (statusElement) {
 					// Get appropriate explorer URL based on network

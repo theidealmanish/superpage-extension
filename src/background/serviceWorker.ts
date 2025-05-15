@@ -67,6 +67,26 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		return true;
 	}
+
+	// Handle transaction recording
+	if (message.type === 'recordTransaction') {
+		console.log('[SuperPage Background] Recording transaction:', message.data);
+
+		recordTransaction(message.data)
+			.then((result) => {
+				sendResponse({ success: true, data: result });
+			})
+			.catch((error) => {
+				console.error(
+					'[SuperPage Background] Error recording transaction:',
+					error
+				);
+				sendResponse({ success: false, error: error.message });
+			});
+
+		return true; // Keep the message channel open for async response
+	}
+
 	return true;
 });
 
@@ -155,6 +175,46 @@ async function fetchRecipientAddress(
 			'[SuperPage Background] Error fetching recipient address:',
 			error
 		);
+		throw error;
+	}
+}
+
+// Add this new function to handle transactions with authentication
+async function recordTransaction(transactionData: any): Promise<any> {
+	try {
+		// Get the authenticated token from storage
+		const tokenData = await chrome.storage.local.get(['token']);
+		const token = tokenData.token;
+
+		if (!token) {
+			throw new Error('Authentication token not found. Please sign in again.');
+		}
+
+		// Make the API request with authorization header
+		const response = await fetch(`${API_URL}/transactions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(transactionData),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(
+				errorData.message || `Request failed with status ${response.status}`
+			);
+		}
+
+		const data = await response.json();
+		console.log(
+			'[SuperPage Background] Transaction recorded successfully:',
+			data
+		);
+		return data;
+	} catch (error) {
+		console.error('[SuperPage Background] Error recording transaction:', error);
 		throw error;
 	}
 }
