@@ -58,10 +58,11 @@ export default function LoginPage({ onLogin, isExtension }: LoginPageProps) {
 				className={`w-full mx-auto ${isExtension ? 'max-w-none' : 'max-w-sm'}`}
 			>
 				<div className='text-center mb-5'>
-					<h1 className='text-xl font-semibold text-primary'>SuperPage</h1>
-					<p className='text-muted-foreground text-sm'>
-						Creator monetization for everyone
-					</p>
+					<img
+						src='/images/super.png'
+						alt='SuperPage'
+						className='w-16 h-16 mx-auto mb-2'
+					/>
 				</div>
 
 				<Card
